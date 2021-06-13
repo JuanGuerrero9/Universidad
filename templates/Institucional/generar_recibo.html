@@ -21,15 +21,15 @@
                     <form method="post">
                         {% csrf_token %}
                         <label for="exampleFormControlInput1" class="form-label">Nombres del Estudiante</label>
-                        <input class="form-control form-control-lg" name="persona_nombre" type="text" placeholder="Nombre Estudiante" aria-label=".form-control-lg example">
+                        <input class="form-control form-control-lg" name="persona_nombre" type="text" placeholder="Nombre Estudiante" aria-label=".form-control-lg example" required>
                         <label for="exampleFormControlInput1" class="form-label">Apellidos del Estudiante</label>
-                        <input class="form-control form-control-lg" name="persona_apellido" type="text" placeholder="Apellidos del Estudiante" aria-label=".form-control-lg example">
+                        <input class="form-control form-control-lg" name="persona_apellido" type="text" placeholder="Apellidos del Estudiante" aria-label=".form-control-lg example" required>
                         <label for="exampleFormControlInput1" class="form-label">Numero de identidad</label>
-                        <input class="form-control form-control-lg" name="persona_documento" type="text" placeholder="Digite su numero de identidad" aria-label=".form-control-lg example">
+                        <input class="form-control form-control-lg" name="persona_documento" type="text" placeholder="Digite su numero de identidad" aria-label=".form-control-lg example" required>
                         <br>
                         <label for="exampleFormControlInput1" class="form-label">Carrera a Matricular</label> <br>
-                        <select class="form-select" aria-label="Default select example" name="persona_carrera">
-                            <option selected>Elige una carrera</option>
+                        <select class="form-select" aria-label="Default select example" name="persona_carrera" required>
+                            <option selected disabled>Elige una carrera</option>
                             {% for i in programa %}
                             <option value="{{ i.id_programa }}">{{ i.nombre }}</option>
                             {% endfor %}

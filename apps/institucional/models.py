@@ -50,6 +50,9 @@ class PagoRecibo(models.Model):
     semestre               = models.ForeignKey(Semestre, on_delete= models.CASCADE)
     persona                = models.ForeignKey(Persona, on_delete= models.CASCADE, null= True, blank= True)
 
+    def __str__(self):
+        return str(self.codigo)
+
 
 class Asignatura(models.Model):
     id_asignatura          = models.AutoField(primary_key = True)
@@ -72,6 +75,8 @@ class AsignaturaAntecesora(models.Model):
     asignatura               = models.ForeignKey(Asignatura, on_delete= models.CASCADE, blank= True, default=None)
     antecesora               = models.ForeignKey(Antecesora, on_delete= models.CASCADE, blank= True, default=None, null=True)
 
+    def __str__(self):
+        return self.asignatura.nombre
 
 class DiaSemana(models.Model):
     id_dia_semana = models.AutoField(primary_key= True)
@@ -89,6 +94,9 @@ class HorarioAsignatura(models.Model):
     Asignatura          = models.ForeignKey(Asignatura, on_delete= models.CASCADE, blank= True)
     docente             = models.ForeignKey(Usuario, on_delete= models.CASCADE, blank= True)
 
+    def __str__(self):
+        return self.Asignatura.nombre
+
 class AsignaturaUsuario(models.Model):
     id_asignatura_usuario       = models.AutoField(primary_key=True)
     usuario                     = models.ForeignKey(Usuario, on_delete= models.CASCADE)
@@ -97,6 +105,9 @@ class AsignaturaUsuario(models.Model):
     aprobado                    = models.BooleanField(default= False)
     matricula_realizada         = models.BooleanField(default= False)
     horario_asignatura          = models.ForeignKey(HorarioAsignatura, on_delete= models.CASCADE, default=None, null= True)
+
+    def __str__(self):
+        return self.usuario
 
 class Cortes(models.Model):
     id_cortes                   = models.AutoField(primary_key= True)
@@ -107,6 +118,8 @@ class Cortes(models.Model):
     porcentaje_corte3           = models.IntegerField(default=0.40, editable= False)
     asignatura_usuario          = models.ForeignKey(AsignaturaUsuario, on_delete= models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.asignatura_usuario
 
 class NotaFinal(models.Model):
     id_nota_final       = models.AutoField(primary_key= True)
@@ -114,5 +127,7 @@ class NotaFinal(models.Model):
     nota                = models.IntegerField(default=0)
     asignatura          = models.ForeignKey(AsignaturaUsuario, on_delete= models.CASCADE, null=True)
 
+    def __str__(self):
+        return self.asignatura.nombre
 
 

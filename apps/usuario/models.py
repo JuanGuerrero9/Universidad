@@ -87,6 +87,8 @@ class Persona(models.Model):
 
     REQUIRED_FIELDS = ['nombres', 'apellidos', 'cedula_ciudadano']
 
+    def __str__(self):
+        return self.nombres
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     username                 = models.CharField('Nombre de usuario',unique = True, max_length=100)
@@ -109,11 +111,6 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     
 
     def save(self, *args, **kwargs):
-
-
-
-
-
         if not self.id:
             super().save(*args, **kwargs)
             
@@ -137,3 +134,5 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
                     super().save(*args, **kwargs)
             super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.username

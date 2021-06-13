@@ -3,6 +3,7 @@ from apps.usuario.models import Persona
 
 
 class PersonaForm(forms.ModelForm):
+    
     class Meta:
         model = Persona
         fields = ['nombres', 'apellidos', 'cedula_ciudadano', 'imagen']

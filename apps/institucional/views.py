@@ -1,5 +1,6 @@
 import random
 from random import randint
+
 from django.urls import reverse
 from django.template import Context
 from django.shortcuts import render, redirect
@@ -7,24 +8,28 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, TemplateView, View, UpdateView
 from django.views.decorators.http import require_http_methods
+
 from apps.institucional.models import *
 from apps.usuario.models import Persona, Usuario
 from apps.institucional.forms import PersonaForm
 
 
 class UsuarioNuevo(TemplateView):
-
+    model = Usuario
     template_name = 'Usuario/usuario_creado.html'
 
+    def get_queryset(self, usuario):
+        queryset = self.model.objects.filter(id = usuario).first()
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['usuario'] = self.get_queryset(self.kwargs['usuario'])
+        context['password'] = self.kwargs['password']
+        return context  
+
     def get(self, request, *args, **kwargs):
-        usuario = self.kwargs['usuario']
-        password = self.kwargs['password']
-        datos = Usuario.objects.get(id = usuario)
-        context = {
-            'usuario': datos,
-            'password': password
-        }
-        return render(request, self.template_name, context)
+        return render(request, self.template_name, self.get_context_data())
 
 class Recibo(TemplateView):
 
@@ -45,10 +50,11 @@ class RevisarNotas(TemplateView):
     template_name = 'Institucional/revisar_notas.html'
 
     def get(self, request, *args, **kwargs):
-        usuario = AsignaturaUsuario.objects.filter(usuario= request.user)
-        notas= []
-        for i in usuario:
-            notas += NotaFinal.objects.filter(asignatura= i)
+        usuarios = AsignaturaUsuario.objects.filter(usuario= request.user)
+        notas = []
+        for usuario in usuarios:
+            notas.append(NotaFinal.objects.filter(asignatura= usuario))
+            #notas += NotaFinal.objects.filter(asignatura= i)
         context = {
             'notas': notas
         }
@@ -62,40 +68,44 @@ class DatosCrearUsuario(TemplateView):
     template_name = 'Usuario/datos_crear_usuario.html'
 
     def post(self, request, *args, **kwargs):
-        recibo = PagoRecibo.objects.get(codigo = request.POST['recibo_codigo'])
-        persona = Persona.objects.get(id_persona= recibo.persona.id_persona)
-        print(recibo)
-        if recibo.esta_pago:
-            password = str(randint(1000000, 9999999))
-            nuevo_usuario, created = Usuario.objects.get_or_create(
-                username             = f'{persona.nombres.replace(" ", "")}_{randint(1000,9999)}',
-                password             = password,
-                codigo_universitario = randint(1000000, 9999999),
-                email                = request.POST['persona_correo_electronico'],
-                persona              = persona
+        recibo = PagoRecibo.objects.filter(codigo = request.POST['recibo_codigo']).first()
+        if recibo:
+            persona = Persona.objects.filter(id_persona= recibo.persona.id_persona).first()
 
-            )
-            if created:
-                nuevo_usuario.set_password(password)
-                nuevo_usuario.save()
-            usuario = nuevo_usuario.id
-            asignaturas = Asignatura.objects.filter(semestre= recibo.semestre.id_semestre)
-            for i in asignaturas:
-                UserAsignatura, created = AsignaturaUsuario.objects.get_or_create(
-                    usuario     = request.user,
-                    asignatura  = i
-                )
-                cortes, created2 = Cortes.objects.get_or_create(
-                    asignatura_usuario = UserAsignatura
-                )
-                notafinal, created3 = NotaFinal.objects.get_or_create(
-                    cortes     = cortes,
-                    asignatura = UserAsignatura
-                )
+            if recibo.esta_pago:
+                password = str(randint(1000000, 9999999))
+                nuevo_usuario, created = Usuario.objects.get_or_create(
+                    username             = f'{persona.nombres.replace(" ", "")}_{randint(1000,9999)}',
+                    password             = password,
+                    codigo_universitario = randint(1000000, 9999999),
+                    email                = request.POST['persona_correo_electronico'],
+                    persona              = persona
 
-            return redirect(reverse('institucional:usuario_creado', kwargs={'usuario':usuario, 'password':password}))
+                )
+                
+                if created:
+                    nuevo_usuario.set_password(password)
+                    nuevo_usuario.save()
+                
+                usuario = nuevo_usuario.id
+                asignaturas = Asignatura.objects.filter(semestre= recibo.semestre.id_semestre)
+                
+                for i in asignaturas:
+                    UserAsignatura, created = AsignaturaUsuario.objects.get_or_create(
+                        usuario     = request.user,
+                        asignatura  = i
+                    )
+                    cortes, _ = Cortes.objects.get_or_create(
+                        asignatura_usuario = UserAsignatura
+                    )
+                    notafinal, created3 = NotaFinal.objects.get_or_create(
+                        cortes     = cortes,
+                        asignatura = UserAsignatura
+                    )
+
+                return redirect(reverse('institucional:usuario_creado', kwargs={'usuario':usuario, 'password':password}))
         else:
-            HttpResponse("El codigo de recibo de pago aun no esta cancelado")
+            return HttpResponse("El codigo de recibo de pago aun no esta cancelado")
         return redirect(reverse('institucional:datos_crear_usuario'))
    
 
@@ -165,6 +175,10 @@ class GenerarRecibo(View):
         return render(request, self.template_name, {'programa': programa, 'semestre': semestre})
 
     def post(self, request, *args, **kwargs):
+
+        programa = Programa.objects.all()
+        semestre = Semestre.objects.all()
+
         cedula = request.POST['persona_documento']
         persona, created = Persona.objects.get_or_create(
             nombres          = request.POST['persona_nombre'],
@@ -172,15 +186,26 @@ class GenerarRecibo(View):
             cedula_ciudadano = int(request.POST['persona_documento'])
 
         )
-        plan_estudio = PlanEstudio.objects.get(programa= int(request.POST['persona_carrera']))
-        semestre = Semestre.objects.get(id_semestre = request.POST['persona_semestre'])
-        recibo_estudiante, creado = PagoRecibo.objects.get_or_create(
-            codigo      = randint(10000000, 99999999),
-            semestre    = semestre,
-            persona     = persona
-        )
-        recibo= recibo_estudiante.id_pago_recibo
-        return redirect(reverse('institucional:recibo', kwargs={'recibo': recibo}))
+        try:
+            carrera_persona = int(request.POST['persona_carrera'])
+        except:
+            carrera_persona = 0
+        
+        if carrera_persona > 0:
+            plan_estudio = PlanEstudio.objects.filter(programa= int(request.POST['persona_carrera'])).first()
+            semestre = Semestre.objects.filter(id_semestre = request.POST['persona_semestre']).first()
+            recibo_estudiante, creado = PagoRecibo.objects.get_or_create(
+                codigo      = randint(10000000, 99999999),
+                semestre    = semestre,
+                persona     = persona
+            )
+            recibo= recibo_estudiante.id_pago_recibo
+            return redirect(reverse('institucional:recibo', kwargs={'recibo': recibo}))
+        else:
+            errores = {
+                'persona_carrera': 'Debe seleccionar una carrera'
+            }
+        return render(request, self.template_name, {'programa': programa, 'semestre': semestre})
 
 
          
@@ -218,7 +243,7 @@ class MatricularAsignatura(View):
         asignaturas_para_matricular = []
         for i in asignaturas_usuario:
             asignaturas_con_antecesoras = AsignaturaAntecesora.objects.filter(antecesora = i.asignatura.id_asignatura)
-            asignaturas_sin_antecesoras = AsignaturaAntecesora.objects.filter(asignatura = i.asignatura.id_asignatura, antecesora = None)
+            asignaturas_sin_antecesoras = asignaturas_con_antecesoras.filter(antecesora = None)#AsignaturaAntecesora.objects.filter(asignatura = i.asignatura.id_asignatura, antecesora = None)
             if asignaturas_sin_antecesoras is not None:
                 for f in asignaturas_sin_antecesoras:
                     asignaturas_para_matricular += AsignaturaUsuario.objects.filter(
