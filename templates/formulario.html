@@ -1,0 +1,36 @@
+{% extends 'login.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+
+
+        <div class="sidenav">
+                <div class="login-main-text">
+                    <h2>Universidad J<br> Inicio sesion</h2>
+                    <p>Inicia sesion o registrate</p>
+                </div>
+        </div>
+            <div class="main">
+                <div class="col-md-6 col-sm-12">
+                    <div class="login-form">
+                    <form action="" method='post'>
+                        {% csrf_token %}
+                        <h5>Username</h5>
+                        {{ form.username }}
+                        <h5>Password</h5>
+                        {{ form.password }}
+                        <button type="submit" class="btn btn-black">Iniciar sesion</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        
+
+    {% endblock body %}
+    

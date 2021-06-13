@@ -1,0 +1,68 @@
+{% extends 'login.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    <script>
+        $('form').submit(function(event) {
+            event.preventDefault();
+    
+            var data = new FormData(this);
+    
+            var action = function(d) {
+                location.href ="http://www.pagina1.com";
+            };
+            var action2 = function(d) {
+                console.log(d);
+            };
+    
+            $.ajax({
+                url: 'http://127.0.0.1:8000/rest/docentes/',
+                data: data,
+                type: 'POST',
+                contentType: false,
+                processData: false,
+                success: action,
+                error: action2,
+            });
+        });
+    </script>
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+
+
+        <div class="sidenav">
+                <div class="login-main-text">
+                    <h2>Universidad J</h2>
+                    <p>Crear Cuenta Docente</p>
+                </div>
+        </div>
+            <div class="main">
+                <div class="col-md-6 col-sm-12">
+                    <div class="login-form">
+                    <form action="" method='post' enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" class="form-control" name="nombre" placeholder="Nombre">
+                        </div>
+                        <div class="form-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" class="form-control"  name="email" placeholder="Correo Electrónico">
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de nacimiento</label>
+                            <input type="date" class="form-control"  name="fecha_nacimiento" placeholder="Fecha de nacimiento">
+                        </div>
+                        <button type="submit" class="btn btn-black">Crear</button>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        
+
+    {% endblock body %}
+
+    

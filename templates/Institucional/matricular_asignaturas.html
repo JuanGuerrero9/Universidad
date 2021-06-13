@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Listado de asignaturas matriculadas</h2>
+                </div>
+            </header>
+        
+            <div class="row">
+                <div class="col-11">
+
+                    <table class="table table-dark table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Hora Inicio</th>
+                            <th scope="col">Hora Final</th>
+                            <th scope="col">Dia de semana</th>
+                            <th scope="col">Asignatura</th>
+                            <th scope="col">Docente</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {% for i in horarios %}
+                          <tr>
+                            <th scope="row">{{ i.horario_asignatura.id_horario }}</th>
+                            <td>{{ i.horario_asignatura.hora_inicio }}</td>
+                            <td>{{ i.horario_asignatura.hora_final }}</td>
+                            <td>{{ i.horario_asignatura.dia_semana }}</td>
+                            <td>{{ i.horario_asignatura.Asignatura }}</td>
+                            <td>{{ i.horario_asignatura.docente }}</td>
+                          </tr>
+                          {% endfor %}
+                        </tbody>
+                      </table>
+
+                    
+                    <h2>Elige una asignatura a matricular</h2>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <br>
+                        <label for="exampleFormControlInput1" class="form-label">Elige una asignatura</label>
+                        <select class="form-select" aria-label="Default select example" name="asignatura_semestre">
+                            <option selected>Elige una asignatura</option>
+                            {% for i in asignaturas %}
+                            <option value="{{ i.id_asignatura_usuario }}">{{ i.asignatura.nombre }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="d-grid gap-2 col-4 mx-auto align-items-left">
+                            <br>
+                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}

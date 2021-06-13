@@ -1,0 +1,98 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="utf-8">
+        <title>  {% block title %}  {% endblock title %} </title>
+        <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+        <link rel="stylesheet" href="{% static 'css/all.css' %}">
+        <script src="{% static 'js/bootstrap.js' %}"></script>
+        <script src="{% static 'jquery/jquery.js' %}"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css" rel="stylesheet"/>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+        
+        {% block extra_js %} {% endblock extra_js %}
+    </head>
+<body>
+    <div class="row">
+        <div class="col-12">
+          <nav class="navbar navbar-expand-lg bg-dark text-uppercase fixed-top" id="mainNav">
+              <div class="container">
+                  <a class="navbar-brand js-scroll-trigger" href="{% url 'index' %}">Universidad J</a>
+                  <button class="navbar-toggler navbar-toggler-right text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                      Menu
+                      <i class="fas fa-bars"></i>
+                  </button>
+                  <div class="collapse navbar-collapse" id="navbarResponsive">
+                      <ul class="navbar-nav ml-auto">
+                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'institucional:editar_usuario' request.user.persona.id_persona %}">Configuración de Usuario</a></li>
+                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'logout' %}">Cerrar Sesion</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </nav>
+        </div>
+        <div class="col-3" style="margin-top: 100px;">
+          <div id="accordion" style="margin-left: 50px;">
+              <div class="card">
+                <div class="card-header">
+                  <a class="card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                      <h3>Funcionario</h3>
+                  </a>
+                </div>
+                <div id="collapseOne" class="collapse show">
+                  <div class="card-body">
+                      <ul class="list-group">
+                          <li class="list-group-item"><a href="{% url 'institucional:generar_recibo' %}">Generar recibo</a></li>
+                          <li class="list-group-item"><a href="{% url 'institucional:datos_crear_usuario' %}">Crear Usuario</a></li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                      <h3>Estudiante</h3>
+                  </a>
+                </div>
+                <div id="collapseTwo" class="collapse show">
+                  <div class="card-body">
+                      <ul class="list-group">
+                          <li class="list-group-item"><a href="{% url 'institucional:matricular_asignaturas' %}">Matricular Asignatura</a></li>
+                          <li class="list-group-item"><a href="{% url 'institucional:horario_asignaturas' %}">Horario de asignaturas</a></li>
+                          <li class="list-group-item"><a href="{% url 'institucional:revisar_notas' %}">Revisar notas</a></li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-header">
+                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                      <h3>Docente</h3>
+                  </a>
+                </div>
+                <div id="collapseThree" class="collapse show">
+                  <div class="card-body">
+                      <ul class="list-group">
+                          <li class="list-group-item"><a href="{% url 'institucional:elegir_horario_docente' %}">Agregar notas</a></li>
+                          <li class="list-group-item"><a href="{% url 'institucional:horario_estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
+                          <li class="list-group-item"><a href="">Horario de dictar asignaturas</a></li>
+                      </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="col-9">
+          
+            {% block body %} 
+    
+            {% endblock body %}
+        </div>
+      </div>
+    
+</body>
+
+
+
+</html>

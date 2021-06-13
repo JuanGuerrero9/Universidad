@@ -1,0 +1,37 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Ingresa los datos del estudiante y el codigo del recibo de pago</h2>
+                </div>
+            </header>
+        
+            <div class="row">
+                <div class="col-6">
+                    <form method="post">
+                        {% csrf_token %}
+                        <label for="exampleFormControlInput1" class="form-label">Correo electronico</label>
+                        <input class="form-control form-control-lg" name="persona_correo_electronico" type="text" placeholder="Ingrese su correo electronico" aria-label=".form-control-lg example">
+                        <label for="exampleFormControlInput1" class="form-label">Codigo de recibo de pago</label>
+                        <input class="form-control form-control-lg" name="recibo_codigo" type="text" placeholder="Digite codigo de recibo de pago" aria-label=".form-control-lg example">
+                        <div class="d-grid gap-2 col-4 mx-auto align-items-left">
+                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}

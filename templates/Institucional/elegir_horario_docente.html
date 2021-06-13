@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Elige el horario y la asignatura donde editaras notas</h2>
+                </div>
+            </header>
+        
+            <div class="row">
+                <div class="col-6">
+                    
+                    <form method="post">
+                        {% csrf_token %}
+                        <br>
+                        <label for="exampleFormControlInput1" class="form-label">Elige uno de los horarios y asignaturas</label>
+                        <select class="form-select" aria-label="Default select example" name="asignatura_horario_docente">
+                            <option selected>Elige un Horario y asignatura</option>
+                            {% for i in horarios %}
+                            <option value="{{ i.id_horario }}">{{ i.hora_inicio }}  {{ i.hora_final }}  {{ i.Asignatura }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="d-grid gap-2 col-4 mx-auto align-items-left">
+                            <br>
+                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}

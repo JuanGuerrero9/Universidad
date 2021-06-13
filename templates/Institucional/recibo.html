@@ -1,0 +1,35 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Recibo de Pago</h2>
+                </div>
+            </header>
+        
+            <div class="row">
+                <div class="col-4">
+                    <h2>{{ recibo.codigo }}</h2>
+                </div>
+                <div class="col-4">
+                    <h2>{{ recibo.semestre.costo }}</h2>
+                </div>
+                <div class="col-4">
+                    <h2>{{ recibo.persona.nombres }}</h2>
+                    <h2>{{ recibo.persona.apellidos }}</h2>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}

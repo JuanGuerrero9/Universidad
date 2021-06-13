@@ -1,0 +1,51 @@
+{% extends 'index.html' %}
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Editar datos del Usuario</h2>
+                </div>
+            </header>
+    
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="row">
+                    
+                    
+                    <div class="col-6" style="position: relative">
+                        <h2 style="text-align: center">Imagen de perfil</h2>
+                        <img src='{{ request.user.persona.imagen.url }}' style="position: absolute; width: 400px;height: 400px;top: 0;left: 0;right: 0;bottom: 0;margin: auto;border-radius: 50%;margin-top: 60px;">
+
+                    </div>
+                    <div class="col-4">
+
+                        {{ form.as_p }}
+
+                        <label for="exampleFormControlInput1" class="form-label">Usuario del Estudiante</label>
+                        <input class="form-control" name="usuario_username" type="text" value="{{ request.user.username }}" aria-label=".form-control-lg example">
+
+                        <label for="exampleFormControlInput1" class="form-label">Correo electronico del Estudiante</label>
+                        <input class="form-control" name="usuario_email" type="text" value="{{ request.user.email }}" aria-label=".form-control-lg example">
+
+                        <label for="exampleFormControlInput1" class="form-label">Codigo universitario del Estudiante</label>
+                        <input class="form-control" name="usuario_codigo" type="text" value="{{ request.user.codigo_universitario }}" aria-label=".form-control-lg example">
+                        <br>
+                        <div class="d-grid gap-2 col-4 mx-auto align-items-left">
+                            <button class="btn btn-primary" type="submit">Editar Usuario</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            
+    
+        
+
+    {% endblock body %}

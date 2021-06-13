@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+    
+    
+    
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Creacion satisfactoria de Usuario</h2>
+                </div>
+            </header>
+        
+            <div class="row">
+                <div class="col-6">
+                    <label for="exampleFormControlInput1" class="form-label">Nombre del Usuario</label>
+                    <H2>{{ usuario.username }}</H2>
+                    <label for="exampleFormControlInput1" class="form-label">Contraseña del Usuario</label>
+                    <h2>{{ usuario.password }}</h2>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}
