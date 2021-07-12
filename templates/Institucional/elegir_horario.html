@@ -19,19 +19,23 @@
             <div class="row">
                 <div class="col-6">
                     
-                    <form method="post">
+                    <form id="form_agregar" method="POST">
                         {% csrf_token %}
+                        <div id="errores">
+
+                        </div>
+
                         <br>
                         <label for="exampleFormControlInput1" class="form-label">Elige uno de los horarios</label>
                         <select class="form-select" aria-label="Default select example" name="asignatura_horario">
                             <option selected>Elige un Horario</option>
-                            {% for i in horarios %}
-                            <option value="{{ i.id_horario }}">{{ i.hora_inicio }}  {{ i.hora_final }}  {{ i.docente.persona.nombres }}</option>
+                            {% for horario in horarios %}
+                            <option value="{{ horario.id_horario }}">{{ horario.hora_inicio }}  {{ horario.hora_final }}  {{ horario.docente.persona.nombres }}</option>
                             {% endfor %}
                         </select>
                         <div class="d-grid gap-2 col-4 mx-auto align-items-left">
                             <br>
-                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                            <button class="btn btn-primary" id="boton_creacion" type="button" onclick="matricularMateria();">Enviar peticion</button>
                         </div>
                     </form>
                 </div>

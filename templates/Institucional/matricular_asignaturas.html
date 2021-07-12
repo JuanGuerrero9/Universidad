@@ -52,9 +52,8 @@
                         <br>
                         <label for="exampleFormControlInput1" class="form-label">Elige una asignatura</label>
                         <select class="form-select" aria-label="Default select example" name="asignatura_semestre">
-                            <option selected>Elige una asignatura</option>
-                            {% for i in asignaturas %}
-                            <option value="{{ i.id_asignatura_usuario }}">{{ i.asignatura.nombre }}</option>
+                            {% for asignatura in asignaturas %}
+                              <option value="{{ asignatura.id_asignatura_usuario }}">{{ asignatura.asignatura.nombre }}</option>
                             {% endfor %}
                         </select>
                         <div class="d-grid gap-2 col-4 mx-auto align-items-left">

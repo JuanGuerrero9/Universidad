@@ -96,7 +96,7 @@ class AsignaturaUsuario(models.Model):
     activo                      = models.BooleanField(default= False)
     aprobado                    = models.BooleanField(default= False)
     matricula_realizada         = models.BooleanField(default= False)
-    horario_asignatura          = models.ForeignKey(HorarioAsignatura, on_delete= models.CASCADE, default=None, null= True)
+    horario_asignatura          = models.ForeignKey(HorarioAsignatura, on_delete= models.CASCADE, default=None, null= True, blank= True)
 
 class Cortes(models.Model):
     id_cortes                   = models.AutoField(primary_key= True)

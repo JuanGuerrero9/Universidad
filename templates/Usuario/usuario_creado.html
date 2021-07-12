@@ -16,12 +16,16 @@
                 </div>
             </header>
         
-            <div class="row">
+            <div class="row justify-content-center">
                 <div class="col-6">
-                    <label for="exampleFormControlInput1" class="form-label">Nombre del Usuario</label>
-                    <H2>{{ usuario.username }}</H2>
-                    <label for="exampleFormControlInput1" class="form-label">Contraseña del Usuario</label>
-                    <h2>{{ usuario.password }}</h2>
+                    <div class="alert alert-success col align-self-center" role="alert">
+                        <h3 style="text-align: center">Se ha creado exitosamente el Usuario!</h3><br>
+                        <p style="text-align: center">Estos datos deben ser entregados al nuevo estudiante</p><br>
+                        <p style="text-align: center"><strong>Nombre del Usuario:</strong></p>
+                        <H2 style="text-align: center">{{ usuario.username }}</H2>
+                        <p style="text-align: center"><strong>Contraseña del Usuario:</strong></p>
+                        <h2 style="text-align: center">{{ password }}</h2>
+                    </div>
                 </div>
             </div>
             

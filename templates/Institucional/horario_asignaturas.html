@@ -5,7 +5,30 @@
     {% block extra_js %}
     
     
-    
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            var calendarEL = document.getElementById('calendar')
+            
+            var calendar = new FullCalendar.Calendar(calendarEL, {
+                timeZone: 'UTC',
+                initialView: 'timeGridWeek',
+                businessHours: {
+                    daysOfWeek: [ 1, 2, 3, 4, 5, 6 ],
+
+                    startTime: '7:00', // a start time (10am in this example)
+                    endTime: '22:00', // an end time (6pm in this example)
+                },
+                headerToolbar: {
+                left: 'prev,next',
+                center: 'title',
+                },
+                events: 'https://fullcalendar.io/demo-events.json?with-resources=2'
+            });
+            calendar.render();
+            calendar.setOption('locale', 'es');
+        });
+    </script>
+
     {% endblock extra_js %}
 
     {% block body %}
@@ -18,57 +41,10 @@
         
             <div class="row">
                 <div class="col-11">
+                    <div id="calendar" class="container">
 
-                    <table class="table table-dark table-striped">
-                        <thead>
-                          <tr>
-                            <th scope="col">Lunes</th>
-                            <th scope="col">Martes</th>
-                            <th scope="col">Miercoles</th>
-                            <th scope="col">Jueves</th>
-                            <th scope="col">Viernes</th>
-                            <th scope="col">Sabado</th>
-                            <th scope="col">Domingo</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                {% for a in 0 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 1 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 2 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 3 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 4 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 5 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                            <tr>
-                                {% for a in 6 %}
-                                    <th>{{ a.horario_asignatura.hora_inicio }} {{ a.horario_asignatura.hora_final }} <br> {{ a.horario_asignatura.asignatura }}</th>
-                                {% endfor %}
-                            </tr>
-                        </tbody>
-                      </table>
+                    </div>
+                    
 
                     
                 </div>

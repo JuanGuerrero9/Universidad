@@ -31,15 +31,17 @@
                           </tr>
                         </thead>
                         <tbody>
-                            {% for i in notas %}
-                            <tr>
-                                <th scope="row">{{ i.id_nota_final }}</th>
-                                <td>{{ i.asignatura.asignatura }}</td>
-                                <td>{{ i.cortes.nota_corte1 }}</td>
-                                <td>{{ i.cortes.nota_corte2 }}</td>
-                                <td>{{ i.cortes.nota_corte3 }}</td>
-                                <td>{{ i.nota }}</td>
-                            </tr>
+                            {% for object in notas %}
+                                {% for i in object %}
+                                <tr>
+                                    <th scope="row">{{ i.id_nota_final }}</th>
+                                    <td>{{ i.asignatura.asignatura }}</td>
+                                    <td>{{ i.cortes.nota_corte1 }}</td>
+                                    <td>{{ i.cortes.nota_corte2 }}</td>
+                                    <td>{{ i.cortes.nota_corte3 }}</td>
+                                    <td>{{ i.nota }}</td>
+                                </tr>
+                                {% endfor %}
                             {% endfor %}
                         </tbody>
                       </table>

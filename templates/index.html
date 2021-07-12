@@ -1,4 +1,5 @@
 {% load static %}
+{% load has_group %}
 <!DOCTYPE html>
 <html lang="es">
     <head>
@@ -6,11 +7,19 @@
         <title>  {% block title %}  {% endblock title %} </title>
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
         <link rel="stylesheet" href="{% static 'css/all.css' %}">
-        <script src="{% static 'js/bootstrap.js' %}"></script>
+        <script src="https://unpkg.com/@popperjs/core@2"></script>
         <script src="{% static 'jquery/jquery.js' %}"></script>
+        <script src="{% static 'js/bootstrap.js' %}"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css" rel="stylesheet"/>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
         
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="{% static 'js/sweetalerts.js' %}"></script>
+
+        <script src="{% static 'fullcalendar/lib/main.js' %}"></script>
+        <link rel="stylesheet" href="{% static 'fullcalendar/lib/main.css' %}">
+        <script src="{% static 'fullcalendar/lib/locales-all.js' %}"></script>
+
         {% block extra_js %} {% endblock extra_js %}
     </head>
 <body>
@@ -33,54 +42,62 @@
           </nav>
         </div>
         <div class="col-3" style="margin-top: 100px;">
-          <div id="accordion" style="margin-left: 50px;">
-              <div class="card">
-                <div class="card-header">
-                  <a class="card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                      <h3>Funcionario</h3>
-                  </a>
-                </div>
-                <div id="collapseOne" class="collapse show">
-                  <div class="card-body">
-                      <ul class="list-group">
-                          <li class="list-group-item"><a href="{% url 'institucional:generar_recibo' %}">Generar recibo</a></li>
-                          <li class="list-group-item"><a href="{% url 'institucional:datos_crear_usuario' %}">Crear Usuario</a></li>
-                      </ul>
+          <div id="accordion" style="margin-left: 50px; padding-top: 20px;">
+              {% if request.user|has_group:'Funcionario' %}
+                <div class="card">
+                  <div class="card-header">
+                    <a class="card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        <h3>Funcionario</h3>
+                    </a>
+                  </div>
+                  <div id="collapseOne" class="collapse show">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="{% url 'institucional:generar_recibo' %}">Generar recibo</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:datos_crear_usuario' %}">Crear Usuario</a></li>
+                        </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="card">
-                <div class="card-header">
-                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
-                      <h3>Estudiante</h3>
-                  </a>
-                </div>
-                <div id="collapseTwo" class="collapse show">
-                  <div class="card-body">
-                      <ul class="list-group">
-                          <li class="list-group-item"><a href="{% url 'institucional:matricular_asignaturas' %}">Matricular Asignatura</a></li>
-                          <li class="list-group-item"><a href="{% url 'institucional:horario_asignaturas' %}">Horario de asignaturas</a></li>
-                          <li class="list-group-item"><a href="{% url 'institucional:revisar_notas' %}">Revisar notas</a></li>
-                      </ul>
+              {% endif %}
+              {% if request.user|has_group:'Estudiante' %}
+                <div class="card">
+                  <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
+                        <h3>Estudiante</h3>
+                    </a>
+                  </div>
+                  <div id="collapseTwo" class="collapse show">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="{% url 'institucional:matricular_asignaturas' %}">Matricular Asignatura</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:horario_asignaturas' %}">Horario de asignaturas</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:revisar_notas' %}">Revisar notas</a></li>
+                        </ul>
+                    </div>
+                  </div>
+                </div>  
+              {% endif %}
+              {% if request.user|has_group:'Docente' %}
+                <div class="card">
+                  <div class="card-header">
+                    <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
+                        <h3>Docente</h3>
+                    </a>
+                  </div>
+                  <div id="collapseThree" class="collapse show">
+                    <div class="card-body">
+                        <ul class="list-group">
+                            <li class="list-group-item"><a href="{% url 'institucional:elegir_horario_docente' %}">Agregar notas</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:horario_estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
+                            <li class="list-group-item"><a href="">Horario de dictar asignaturas</a></li>
+                        </ul>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div class="card">
-                <div class="card-header">
-                  <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                      <h3>Docente</h3>
-                  </a>
-                </div>
-                <div id="collapseThree" class="collapse show">
-                  <div class="card-body">
-                      <ul class="list-group">
-                          <li class="list-group-item"><a href="{% url 'institucional:elegir_horario_docente' %}">Agregar notas</a></li>
-                          <li class="list-group-item"><a href="{% url 'institucional:horario_estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
-                          <li class="list-group-item"><a href="">Horario de dictar asignaturas</a></li>
-                      </ul>
-                  </div>
-                </div>
-              </div>
+              {% endif %}
+              
+              
             </div>
         </div>
         <div class="col-9">
