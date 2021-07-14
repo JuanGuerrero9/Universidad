@@ -23,7 +23,7 @@ from apps.institucional.forms import PersonaForm, NuevoEstudianteForm, ProgramaF
 
 class UsuarioNuevo(TemplateView):
 
-    ###  --- Vista para crear un usuario desde la pestaña del FUNCIONARIO ---
+    ###  --- Vista donde se imprime el usuario y la contrasenia del nuevo usuario creado ---
 
     model = Usuario
     template_name = 'Usuario/usuario_creado.html'
@@ -36,12 +36,10 @@ class UsuarioNuevo(TemplateView):
         context = {}
         context['usuario'] = self.get_queryset(self.kwargs['usuario'])
         context['password'] = self.kwargs['passusuario']
-        return context  
+        return context   
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
-
-
 
 class Recibo(TemplateView):
 
@@ -76,21 +74,23 @@ class RevisarNotas(TemplateView):
     template_name = 'Institucional/revisar_notas.html'
 
     def get_queryset(self, usuario):
-        queryset = self.model.objects.filter(usuario = usuario)
+        queryset = self.model.objects.filter(usuario = usuario, activo= True,horario_asignatura= not None)
         return queryset
 
     def get_context_data(self, **kwargs):
         context = {}
-        usuarios = self.get_queryset(self.request.user)
+        asignaturas = self.get_queryset(self.request.user)
+        print(asignaturas)
         notas = []
-        for usuario in usuarios:
-            notas.append(NotaFinal.objects.filter(asignatura = usuario))
+        for asignatura in asignaturas:
+            notas.append(NotaFinal.objects.filter(asignatura = asignatura))
         context['notas'] = notas
         return context
 
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
+
 
 
 class HorarioAsignaturas(TemplateView):
@@ -118,10 +118,8 @@ class HorarioAsignaturas(TemplateView):
                 context['Sabado'] = asignatura
         return context
 
-
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name, self.get_context_data())
-
 
 
 class EstudiantesMatriculados(TemplateView):
@@ -176,6 +174,14 @@ class DatosCrearUsuario(View):
     ###  --- Vista que desde la pestaña de FUNCIONARIO te permite ingresar los datos necesarios para generar un usuario ---
 
     template_name = 'Usuario/datos_crear_usuario.html'
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['programa'] = Programa.objects.all()
+        context['semestre'] = Semestre.objects.all()
+        context['form'] = self.form_class
+        context['form2'] = self.second_form_class
+        return context
 
     def get(self, request, *args, **kwargs):
         return render(request, self.template_name)
@@ -250,7 +256,6 @@ class DatosCrearUsuario(View):
 
 
 
-
 class GenerarRecibo(View):
 
     ###  --- Vista que desde la pestaña FUNCIONARIO te permite ingresar los datos para generar un recibo de pago ---
@@ -302,13 +307,11 @@ class GenerarRecibo(View):
                 return response
         else:
             return redirect('index')
-
-
          
 
 class ElegirHorarioEstudiante(View):
 
-    ###  --- Te permite elegir desde la pestaña ESTUDIANTE el horario que deseas ver la asignatura a matricular ---
+    ###  --- Te permite elegir desde la pestaña ESTUDIANTE el horario que deseas ver en la asignatura a matricular ---
 
     model = HorarioAsignatura
     template_name = 'Institucional/elegir_horario.html'
@@ -330,16 +333,21 @@ class ElegirHorarioEstudiante(View):
     def post(self, request, *args, **kwargs):
         if request.is_ajax():
             try:
-                asignatura = HorarioAsignatura.objects.filter(id_horario=request.POST['asignatura_horario']).first()
+                asignatura = HorarioAsignatura.objects.filter(id_horario=int(request.POST['asignatura_horario'])).first()
             except:
                 asignatura = None
+            print(asignatura)
             if asignatura != None:
                 usuario = AsignaturaUsuario.objects.filter(usuario= request.user, asignatura= asignatura.Asignatura).first()
                 usuario.horario_asignatura = asignatura
                 usuario.save()
                 mensaje = 'Se ha agregado horario a la asignatura correctamente!'
                 error = 'No hay errores'
-                response = JsonResponse({'mensaje':mensaje,'error':error})
+                context = {
+                    'status': 201
+                }
+                response = JsonResponse({'mensaje':mensaje,'error':error, 'context': context})
+                response.status_code = 201
                 return response
             else:
                 mensaje = 'No se ha podido añadir un horario a la asignatura!'
@@ -350,6 +358,70 @@ class ElegirHorarioEstudiante(View):
         else:
             return redirect(reverse('index'))
 
+
+class SimuladorPagoRecibo(View):
+
+    template_name = 'Institucional/simulador_pago_recibo.html'
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        context['bancos'] = Bancos.objects.all()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+    
+    def post(self, request, *args, **kwargs):
+        if request.is_ajax():
+            try:
+                recibo = PagoRecibo.objects.filter(
+                    codigo= request.POST['codigo_de_pago']
+                ).first()
+            except:
+                recibo = None
+            if recibo is not None and recibo.esta_pago != True:
+                banco = Bancos.objects.filter(id_banco = request.POST['banco_tarjeta']).first()
+                try:
+                    tarjeta_credito = TarjetaCredito.objects.filter(
+                        numero_tarjeta= int(request.POST['numero_tarjeta_credito']),
+                        banco= banco,
+                        codigo_seguridad= int(request.POST['codigo_seguridad_tarjeta']),
+                        propietario= request.POST['propietario_tarjeta']
+                    ).first()
+                except:
+                    tarjeta_credito = None
+
+                if tarjeta_credito is not None:
+                    semestre = Semestre.objects.filter(id_semestre= recibo.semestre.id_semestre).first()
+                    saldo_total = int(tarjeta_credito.saldo) + int(tarjeta_credito.credito_maximo)
+                    if saldo_total > int(semestre.costo):
+                        tarjeta_credito.saldo = tarjeta_credito.saldo - semestre.costo
+                        recibo.esta_pago = True
+                        mensaje = 'Desea pagar el recibo con valor de {}?'.format(semestre.costo)
+                        error = 'No hay errores'
+                        response = JsonResponse({'mensaje':mensaje,'error':error})
+                        response.status_code = 201
+                        return response
+                    else:
+                        mensaje = 'No se ha podido pagar el recibo correctamente!'
+                        error = 'El saldo de su tarjeta para pagar el recibo es insuficiente!'
+                        response = JsonResponse({'mensaje': mensaje, 'error': error})
+                        response.status_code = 400
+                        return response
+                else:
+                    mensaje = 'No se ha podido pagar el recibo correctamente!'
+                    error = 'Verifique que los datos de la tarjeta de Credito sean correctos!'
+                    response = JsonResponse({'mensaje': mensaje, 'error': error})
+                    response.status_code = 400
+                    return response
+            else:
+                mensaje = 'No se ha podido pagar el recibo correctamente!'
+                error = 'El codigo de recibo no es correcto o ya se encuentra pago!'
+                response = JsonResponse({'mensaje': mensaje, 'error': error})
+                response.status_code = 400
+                return response
+        else:
+            return redirect(reverse('index'))
 
 
 
@@ -450,15 +522,15 @@ class ElegirHorarioDocente(View):
         queryset = self.model.objects.filter(docente = docente)
         return queryset
 
-    def get_context_data(self, usuario, **kwargs):
+    def get_context_data(self, **kwargs):
         context = {}
-        horarios = self.get_queryset(usuario)
+        horarios = self.get_queryset(self.request.user)
         context['horario'] = horarios
         return context
 
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_context_data(request.user))
+        return render(request, self.template_name, self.get_context_data())
 
     def post(self, request, *args, **kwargs):
         horario = request.POST['asignatura_horario_docente']

@@ -1,0 +1,120 @@
+{% extends 'index.html' %}
+
+    {% block title %} Login {% endblock title %}
+
+    {% block extra_js %}
+
+
+
+<style>
+/* If you like this, please check my blog at codedgar.com.ve */
+@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+.tarjetaCredito{
+  background:#16181a;  border-radius:14px; max-width: 300px; display:block; margin:auto;
+  padding:60px; padding-left:20px; padding-right:20px;box-shadow: 2px 10px 40px black; z-index:99;
+}
+
+.logo-card{max-width:50px; margin-bottom:15px; margin-top: -19px;}
+
+label{display:flex; font-size:10px; color:white; opacity:.4;}
+
+input{font-family: 'Work Sans', sans-serif;background:transparent; border:none; border-bottom:1px solid transparent; color:#dbdce0; transition: border-bottom .4s;}
+input:focus{border-bottom:1px solid #1abc9c; outline:none;}
+
+.cardnumber{display:block; font-size:20px; margin-bottom:8px; }
+
+.name{display:block; font-size:15px; max-width: 200px; float:left; margin-bottom:15px;}
+
+.toleft{float:left;}
+.ccv{width:50px; margin-top:-5px; font-size:15px;}
+
+.receipt{background: #dbdce0; border-radius:4px; padding:5%; padding-top:200px; max-width:600px; display:block; margin:auto; margin-top:-180px; z-index:-999; position:relative;}
+
+.col{width:50%; float:left;}
+.bought-item{background:#f5f5f5; padding:2px;}
+.bought-items{margin-top:-3px;}
+
+.cost{color:#3a7bd5;}
+.seller{color: #3a7bd5;}
+.description{font-size: 13px;}
+.price{font-size:12px;}
+.comprobe{text-align:center;}
+.proceed{position:absolute; transform:translate(300px, 10px); width:50px; height:50px; border-radius:50%; background:#1abc9c; border:none;color:white; transition: box-shadow .2s, transform .4s; cursor:pointer;}
+.proceed:active{outline:none; }
+.proceed:focus{outline:none;box-shadow: inset 0px 0px 5px white;}
+.sendicon{filter:invert(100%); padding-top:2px;}
+
+@media (max-width: 600px){
+  .proceed{transform:translate(250px, 10px);}
+  .col{display:block; margin:auto; width:100%; text-align:center;}
+}
+    
+</style>
+
+
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Simulador para cancelacion de recibo de pago del semestre</h2>
+                </div>
+            </header>
+        
+            <div class="row justify-content-center">
+                <form method="POST" id="form_pagar" action="{% url 'institucional:simulador_pago_recibo' %}">
+                    {% csrf_token %}
+                    <div id="errores">
+
+
+
+                    </div>
+
+
+                    <div class="col-10">
+                        <h6>Ingrese el codigo de pago</h6>
+                        <input class="form-control form-control-lg" name="codigo_de_pago" type="number" placeholder="Digite codigo de pago" aria-label=".form-control-lg example" required>
+                        <br>
+                        <br>
+                    </div>
+                    <div class="col-11">
+
+                        <div class="container ">
+                            <div class="tarjetaCredito">
+                            <button id="boton_creacion" class="proceed" type="button" onclick="pagarRecibo();"><svg class="sendicon" width="24" height="24" viewBox="0 0 24 24">
+                            <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
+                            </svg></button>
+                            <img src="https://seeklogo.com/images/V/VISA-logo-62D5B26FE1-seeklogo.com.png" class="logo-card">
+                            <label for="exampleFormControlInput1" class="form-label">Banco al que pertenece la tarjeta</label>
+                                <select class="form-select" aria-label="Default select example" name="banco_tarjeta" style="background: #16181a; color: white">
+                                    {% for banco in bancos %}
+                                    <option value="{{ banco.id_banco }}">{{ banco.nombre_banco }}</option>
+                                    {% endfor %}
+                                </select>
+                            <br>
+                            <label>Numero de la tarjeta:</label>
+                            <input id="user" type="number" name="numero_tarjeta_credito" class="input cardnumber"  placeholder="XXXX XXXX XXXX XXXX" required>
+                            <label>Nombre del titular:</label>
+                            <input class="input name"  placeholder="Ej: Juan Guerrero" name="propietario_tarjeta">
+                            <label class="toleft">CCV:</label>
+                            <input class="input toleft ccv" placeholder="321" type="number" name="codigo_seguridad_tarjeta">
+                            </div>
+                            <div class="receipt">
+                                
+                                <br>
+                                <p class="comprobe">Esta informacion es confidencial, garantizado por la Universidad Mr. J</p>
+                            </div>
+                                
+                        </div>
+                        
+                    </div>
+                    
+                </form> 
+
+            </div>
+            
+    
+        
+
+    {% endblock body %}

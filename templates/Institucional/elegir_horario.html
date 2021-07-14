@@ -19,7 +19,7 @@
             <div class="row">
                 <div class="col-6">
                     
-                    <form id="form_agregar" method="POST">
+                    <form id="form_agregar" method="POST" action="{% url 'institucional:elegir_horario' request.user.id %}">
                         {% csrf_token %}
                         <div id="errores">
 

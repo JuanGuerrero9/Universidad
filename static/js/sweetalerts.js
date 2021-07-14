@@ -20,17 +20,38 @@ function registrar() {
     });
 }
 
+function pagarRecibo(){
+    activarBoton();
+    $.ajax({
+        data: $('#form_pagar').serialize(),
+        url: $('#form_pagar').attr('action'),
+        type: $('#form_pagar').attr('method'),
+        success: function (response) {
+            confirmacionPagoTarjeta(response.mensaje);
+            setTimeout(() => {
+                reciboPagadoTarjeta(response);
+            }, 2000)
+        },
+        error: function (error) {
+            notificacionError(error.responseJSON.mensaje);
+            mostrarErroresCreacion2(error);
+            activarBoton();
+        }
+    });
+}
+
+
 
 function crearUsuario(){
     activarBoton();
     $.ajax({
         data: $('#form_creacion').serialize(),
-        url: 'institucional:elegir_horario',
+        url: $('#form_creacion').attr('action'),
         type: $('#form_creacion').attr('method'),
         success: function (response) {
             notificacionSuccess(response.mensaje);
             setTimeout(() => {
-                horarioAgregado(response);
+                redirigirCrearUsuario(response, response.context);
             }, 2000)
         },
         error: function (error) {
@@ -50,7 +71,7 @@ function matricularMateria() {
         success: function (response) {
             notificacionSuccess(response.mensaje);
             setTimeout(() => {
-                redirigirCrearUsuario(response, response.context);
+                horarioAgregado(response);
             }, 2000)
         },
         error: function (error) {
@@ -75,7 +96,7 @@ function mostrarErroresCreacion(errores){
 function mostrarErroresCreacion2(errores){
 	$('#errores').html("");
 	let error = "";
-	error += '<div class = "alert alert-danger" <strong>' + errores.responseJSON.error + '</strong></div>';
+	error += '<div class = "alert alert-danger" <strong>' + errores.responseJSON.mensaje + '</strong></div>';
 	$('#errores').append(error);
 }
 
@@ -85,6 +106,26 @@ function activarBoton(){
 	}else{
 		$('#boton_creacion').prop('disabled', false);
 	}
+}
+
+function confirmacionPagoTarjeta(mensaje){
+    Swal.fire({
+        title: 'Esta seguro?',
+        text: mensaje,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si deseo pagarlo'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          Swal.fire(
+            'Pagado!',
+            'El recibo ha sido pagado satisfactoriamente.',
+            'success'
+          )
+        }
+      })
 }
 
 
@@ -103,6 +144,12 @@ function notificacionSuccess(mensaje) {
 		text: mensaje,
 		icon: 'success'
 	})
+}
+
+function reciboPagadoTarjeta(response) {
+    if (response.status == 201) {
+        window.location.href = `/`;
+    }
 }
 
 

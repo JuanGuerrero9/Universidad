@@ -82,6 +82,8 @@ class Persona(models.Model):
 
     REQUIRED_FIELDS = ['nombres', 'apellidos', 'cedula_ciudadano']
 
+    def __str__(self):
+        return self.nombres
 
 class Usuario(AbstractBaseUser, PermissionsMixin):
     username                 = models.CharField('Nombre de usuario',unique = True, max_length=100)
@@ -107,6 +109,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
                 if grupo is not None:
                     self.groups.add(grupo)
                     super().save(*args, **kwargs)
+            else:
+                super().save(*args, **kwargs)
         else:
             if self.rol is not None:
                 grupo_antiguo = Usuario.objects.filter(id = self.id).values('rol__nombre').first()
@@ -122,4 +126,8 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
                     if nuevo_grupo is not None:
                         self.groups.add(nuevo_grupo)
                     super().save(*args, **kwargs)
+            else:
+                super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.username
