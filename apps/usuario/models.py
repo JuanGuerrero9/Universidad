@@ -40,25 +40,20 @@ class Rol(models.Model):
     def save(self, *args, **kwargs):
         permisos_defecto = ['add', 'change', 'delete', 'view']
         if not self.id_rol:
-            nuevo_grupo, created= Group.objects.get_or_create(name = f'{self.nombre}')
+
+            nuevo_grupo, creado= Group.objects.get_or_create(
+                name = f'{self.nombre}'
+                )
+            permiso_nuevo = []
             for permiso in permisos_defecto:
-                permiso_nuevo, creado= Permission.objects.get_or_create(
+                permiso_nuevo.append(Permission.objects.get_or_create(
                     name= f'Can {permiso} {self.nombre}',
                     content_type= ContentType.objects.get_for_model(Rol),
                     codename= f'{permiso}_{self.nombre}'
-                )
-            if created:
-                if self.nombre == 'Estudiante':
-                    print(self.nombre)
-                    for permisoE in permisos_defecto:
-                        permisos_estudiante = Permission.objects.get(codename= f'{permisoE}_matricula')
-                        nuevo_grupo.permissions.add(permisos_estudiante.id)
-                    super().save(*args, **kwargs)    
-                elif self.nombre == 'Docente':
-                    print(self.nombre)
-                    for permisoE in permisos_defecto:
-                        permisos_docente = Permission.objects.get(codename= f'{permisoE}_matricula')
-                        nuevo_grupo.permissions.add(permisos_docente.id)
+                ))
+            if creado:
+                for permisos in permiso_nuevo:
+                    nuevo_grupo.permissions.add(permisos[0].id)
                     super().save(*args, **kwargs)               
         else:
             rol_antiguo = Rol.objects.filter(id = self.id_rol).values('nombre').first()
@@ -105,34 +100,34 @@ class Usuario(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email']
 
-    class Meta:
-        permissions = [('permiso_desde_codigo','Este es un permiso creado desde código'),
-                         ('segundo_permiso_codigo','Segundo permiso creado desde codigo')]
-    
 
     def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
         if not self.id:
-            super().save(*args, **kwargs)
-            
             if self.rol is not None:
-                grupo = Group.objects.filter(name= self.rol.nombre).first
-                if grupo:
+                grupo = Group.objects.filter(name__iexact= self.rol.nombre).first()
+                if grupo is not None:
                     self.groups.add(grupo)
+                    super().save(*args, **kwargs)
+            else:
                 super().save(*args, **kwargs)
         else:
             if self.rol is not None:
                 grupo_antiguo = Usuario.objects.filter(id = self.id).values('rol__nombre').first()
                 if grupo_antiguo['rol__nombre'] == self.rol.nombre:
-                    super().save(*args, **kwargs)
+                    grupo = Group.objects.filter(name= grupo_antiguo['rol__nombre']).first()
+                    if grupo is not None:
+                        self.groups.add(grupo.id)
                 else:
                     grupo_anterior = Group.objects.filter(name= grupo_antiguo['rol__nombre']).first()
-                    if grupo_anterior:
+                    if grupo_anterior is not None:
                         self.groups.remove(grupo_anterior)
                     nuevo_grupo = Group.objects.filter(name= self.rol.nombre).first()
-                    if nuevo_grupo:
+                    if nuevo_grupo is not None:
                         self.groups.add(nuevo_grupo)
                     super().save(*args, **kwargs)
-            super().save(*args, **kwargs)
+            else:
+                super().save(*args, **kwargs)
 
     def __str__(self):
         return self.username

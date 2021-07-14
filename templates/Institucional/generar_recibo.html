@@ -18,39 +18,33 @@
         
             <div class="row">
                 <div class="col-6">
-                    <form method="post">
+                    <form id="form_creacion" action="{% url 'institucional:generar_recibo' %}" method="POST">
+
+
                         {% csrf_token %}
-                        <label for="exampleFormControlInput1" class="form-label">Nombres del Estudiante</label>
-                        <input class="form-control form-control-lg" name="persona_nombre" type="text" placeholder="Nombre Estudiante" aria-label=".form-control-lg example" required>
-                        <label for="exampleFormControlInput1" class="form-label">Apellidos del Estudiante</label>
-                        <input class="form-control form-control-lg" name="persona_apellido" type="text" placeholder="Apellidos del Estudiante" aria-label=".form-control-lg example" required>
-                        <label for="exampleFormControlInput1" class="form-label">Numero de identidad</label>
-                        <input class="form-control form-control-lg" name="persona_documento" type="text" placeholder="Digite su numero de identidad" aria-label=".form-control-lg example" required>
-                        <br>
-                        <label for="exampleFormControlInput1" class="form-label">Carrera a Matricular</label> <br>
-                        <select class="form-select" aria-label="Default select example" name="persona_carrera" required>
-                            <option selected disabled>Elige una carrera</option>
-                            {% for i in programa %}
-                            <option value="{{ i.id_programa }}">{{ i.nombre }}</option>
+                        <div id="errores">
+
+                        </div>
+
+                        {{ form.as_p }}
+
+                        {{ form2.as_p }}
+
+                        <label for="exampleFormControlInput1" class="form-label">Semestre</lab>
+                        <select class="form-select" aria-label="Default select example" name="semestre_estudiante">
+                            {% for semestres in semestre %}
+                            <option value="{{ semestres.id_semestre }}">{{ semestres.nombre }}</option>
                             {% endfor %}
                         </select>
                         <br>
                         <br>
-                        <label for="exampleFormControlInput1" class="form-label">Elige un semestre</label>
-                        <select class="form-select" aria-label="Default select example" name="persona_semestre">
-                            <option selected>Elige una carrera</option>
-                            {% for i in semestre %}
-                            <option value="{{ i.id_semestre }}">{{ i.nombre }}</option>
-                            {% endfor %}
-                        </select>
                         <div class="d-grid gap-2 col-4 mx-auto align-items-left">
-                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                            <button id="boton_creacion" class="btn btn-primary" type="button" onclick="registrar();">Generar recibo</button>
                         </div>
                     </form>
                 </div>
             </div>
             
     
-        
 
     {% endblock body %}

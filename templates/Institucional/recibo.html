@@ -16,16 +16,49 @@
                 </div>
             </header>
         
-            <div class="row">
-                <div class="col-4">
-                    <h2>{{ recibo.codigo }}</h2>
+
+
+            <div class="row justify-content-center">
+                <div class="col-8" style="border:1px solid black; padding: 30px;">
+                    <h5 style="text-align: right">Universidad Mr. J <img style="height: 40px; width: 40px;"  src="https://img2.freepng.es/20181107/vqa/kisspng-scholarship-baresan-university-computer-icons-scho-sotc-conference-ticket-state-of-talent-conferenc-5be3955747ccf9.4881452815416415592941.jpg"> | <strong>RECIBO</strong></h5>
+                    <h6 style="text-align: right">N° de Recibo: {{ recibo.codigo }}</h6>
+                    
+                    <br>
+                    <br>
+                    <p><strong>{{ dia }}</strong></p>
+                    <p>Oficina de Registro y Control de la Universidad Mr. J</p>
+
+                    <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th scope="col">Cantidad</th>
+                            <th scope="col">Descripcion</th>
+                            <th scope="col">Precio Unitario</th>
+                            <th scope="col">Precio Total</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">1</th>
+                            <td>Pago de recibo {{ recibo.semestre.nombre }}</td>
+                            <td>{{ recibo.semestre.costo }}</td>
+                            <td>{{ recibo.semestre.costo }}</td>
+                          </tr>
+                        </tbody>
+                    </table>
+                    <br>
+                    <br>
+                    <br>
+
+
+                    <h5 style="text-align: right">CONDICIONES Y FORMAS DE PAGO</h5>
+                    <p style="text-align: right">Pagar en: <strong>Cuenta Corriente de Banco de Occidente</strong><br>
+                        N° de Cuenta: <strong>182391028</strong><br>
+                        Plazo de pago: <strong>{{ dia }}</strong><br>
+
+                    </p>
                 </div>
-                <div class="col-4">
-                    <h2>{{ recibo.semestre.costo }}</h2>
-                </div>
-                <div class="col-4">
-                    <h2>{{ recibo.persona.nombres }}</h2>
-                    <h2>{{ recibo.persona.apellidos }}</h2>
+
                 </div>
             </div>
             

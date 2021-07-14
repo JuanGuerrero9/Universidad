@@ -13,25 +13,40 @@
             <header class="masthead bg-light Quiensoy text-center">
                 <div class="container d-flex align-items-center flex-column">
                     <h2>Ingresa los datos del estudiante y el codigo del recibo de pago</h2>
+                    <br>
+                    <div class="alert alert-primary">
+                        <h5>Informacion: Es necesario que el recibo de pago se encuentre cancelado para poder crear un usuario</h5>
+                    </div>
                 </div>
             </header>
         
             <div class="row">
                 <div class="col-6">
-                    <form method="post">
+                    <form id="form_creacion" action="{% url 'institucional:datos_crear_usuario' %}" method="POST">
+                        
+
                         {% csrf_token %}
+
+                        <div id="errores">
+
+
+                        </div>
+
+
                         <label for="exampleFormControlInput1" class="form-label">Correo electronico</label>
                         <input class="form-control form-control-lg" name="persona_correo_electronico" type="text" placeholder="Ingrese su correo electronico" aria-label=".form-control-lg example">
                         <label for="exampleFormControlInput1" class="form-label">Codigo de recibo de pago</label>
                         <input class="form-control form-control-lg" name="recibo_codigo" type="text" placeholder="Digite codigo de recibo de pago" aria-label=".form-control-lg example">
+                        <br>
                         <div class="d-grid gap-2 col-4 mx-auto align-items-left">
-                            <button class="btn btn-primary" type="submit">Enviar peticion</button>
+                            <button id="boton_creacion" class="btn btn-primary" type="button" onclick="crearUsuario();">Enviar peticion</button>
                         </div>
                     </form>
                 </div>
             </div>
-            
-    
+        
+
+
         
 
     {% endblock body %}

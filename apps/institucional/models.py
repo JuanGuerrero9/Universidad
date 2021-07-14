@@ -104,10 +104,10 @@ class AsignaturaUsuario(models.Model):
     activo                      = models.BooleanField(default= False)
     aprobado                    = models.BooleanField(default= False)
     matricula_realizada         = models.BooleanField(default= False)
-    horario_asignatura          = models.ForeignKey(HorarioAsignatura, on_delete= models.CASCADE, default=None, null= True)
+    horario_asignatura          = models.ForeignKey(HorarioAsignatura, on_delete= models.CASCADE, default=None, null= True, blank= True)
 
     def __str__(self):
-        return self.usuario
+        return self.usuario.username
 
 class Cortes(models.Model):
     id_cortes                   = models.AutoField(primary_key= True)
@@ -130,4 +130,22 @@ class NotaFinal(models.Model):
     def __str__(self):
         return self.asignatura.nombre
 
+class Bancos(models.Model):
+    id_banco        = models.AutoField(primary_key= True)
+    nombre_banco    = models.CharField('Nombre del banco', max_length= 70)
 
+    def __str__(self):
+        return self.nombre_banco
+
+class TarjetaCredito(models.Model):
+    id_tarjeta_credito   = models.AutoField(primary_key= True)
+    numero_tarjeta       = models.BigIntegerField(default= 0)
+    saldo                = models.IntegerField(default= 0)
+    banco                = models.ForeignKey(Bancos, on_delete= models.CASCADE, default= None)
+    codigo_seguridad     = models.IntegerField(default= 0)
+    credito_maximo       = models.IntegerField(default= 0)
+    propietario          = models.CharField('Nombre del propietario', max_length= 70)
+    esta_embargada       = models.BooleanField(default= False)   
+
+    def __str__(self):
+        return self.propietario
