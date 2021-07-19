@@ -16,5 +16,6 @@ urlpatterns = [
     path('horario_asignaturas/', HorarioAsignaturas.as_view(), name= 'horario_asignaturas'),
     path('horario_estudiantes_matriculados', HorarioEstudiantesMatriculados.as_view(), name= 'horario_estudiantes_matriculados'),
     path('estudiantes_matriculados/<horario_estudiantes>', EstudiantesMatriculados.as_view(), name= 'estudiantes_matriculados'),
-    path('simulador_pago_recibo/', SimuladorPagoRecibo.as_view(), name='simulador_pago_recibo')
+    path('simulador_pago_recibo/', SimuladorPagoRecibo.as_view(), name='simulador_pago_recibo'),
+    path('actualizar_notas/<int:pk>/', ActualizarNotas.as_view(), name='actualizar_notas')
 ]

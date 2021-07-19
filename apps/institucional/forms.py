@@ -1,7 +1,7 @@
 from django import forms
 
 from apps.usuario.models import Persona
-from apps.institucional.models import Programa, Semestre, TarjetaCredito
+from apps.institucional.models import Programa, Semestre, TarjetaCredito, Cortes
 
 
 class PersonaForm(forms.ModelForm):
@@ -118,4 +118,37 @@ class TarjetaCreditoForm(forms.ModelForm):
                 }
             ),
             'programas': forms.Select(attrs={'class': 'select'})
+        }
+
+
+class ActualizarUsuarioForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Cortes
+        fields = ['nota_corte1','nota_corte2','nota_corte3']
+        labels = {
+            'nota_corte1': 'Nota del corte 1',
+            'nota_corte2': 'Nota del corte 2',
+            'nota_corte3': 'Nota del corte 3'
+        }
+        widgets = {
+            'nota_corte1': forms.NumberInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese nota corte 1'
+                }
+            ),
+            'nota_corte2': forms.NumberInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese nota corte 2'
+                }
+            ),
+            'nota_corte3': forms.NumberInput(
+                attrs= {
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese nota corte 3'
+                }
+            )
         }

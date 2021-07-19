@@ -1,5 +1,7 @@
 var $ = jQuery.noConflict();
 
+// funciones para activar modales
+
 function registrar() {
     activarBoton();
     $.ajax({
@@ -82,6 +84,7 @@ function matricularMateria() {
     })
 }
 
+// Funciones para generar errores 
 
 
 function mostrarErroresCreacion(errores){
@@ -100,13 +103,25 @@ function mostrarErroresCreacion2(errores){
 	$('#errores').append(error);
 }
 
-function activarBoton(){
-	if($('#boton_creacion').prop('disabled')){
-		$('#boton_creacion').prop('disabled',true);
-	}else{
-		$('#boton_creacion').prop('disabled', false);
-	}
+// SweetAlerts
+
+function notificacionError(mensaje){
+	Swal.fire({
+		title: 'Error!',
+		text: mensaje,
+		icon: 'error'
+	})
 }
+
+function notificacionSuccess(mensaje) {
+
+	Swal.fire({
+		title: 'Buen Trabajo!',
+		text: mensaje,
+		icon: 'success'
+	})
+}
+
 
 function confirmacionPagoTarjeta(mensaje){
     Swal.fire({
@@ -129,22 +144,8 @@ function confirmacionPagoTarjeta(mensaje){
 }
 
 
-function notificacionError(mensaje){
-	Swal.fire({
-		title: 'Error!',
-		text: mensaje,
-		icon: 'error'
-	})
-}
 
-function notificacionSuccess(mensaje) {
-
-	Swal.fire({
-		title: 'Buen Trabajo!',
-		text: mensaje,
-		icon: 'success'
-	})
-}
+// Funciones de redireccion
 
 function reciboPagadoTarjeta(response) {
     if (response.status == 201) {
@@ -169,4 +170,27 @@ function redirigirCrearUsuario(response, context) {
     if (response.context.status == 201) {
         window.location.href = `/institucional/usuario_creado/${context.usuario}/${context.passusuario}`;
     }
+}
+
+
+
+// Funciones con botones
+
+
+function activarBoton(){
+	if($('#boton_creacion').prop('disabled')){
+		$('#boton_creacion').prop('disabled',true);
+	}else{
+		$('#boton_creacion').prop('disabled', false);
+	}
+}
+
+function cerrar_modal_edicion() {
+	$('#edicion').modal('hide');
+}
+
+function abrir_modal_edicion(url) {
+	$('#edicion').load(url, function () {
+        $(this).modal('show');
+	});
 }

@@ -1,7 +1,7 @@
 from django.contrib import admin
-from apps.institucional.models import *
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
+from apps.institucional.models import *
 
 class AsignaturaResource(resources.ModelResource):
     class Meta:
@@ -25,6 +25,8 @@ class AsignaturaAntecesoraResource(resources.ModelResource):
 
 class AsignaturaAntecesoraAdmin(ImportExportModelAdmin, admin.ModelAdmin):
     resource_class = AsignaturaAntecesoraResource
+
+
 
 
 # Register your models here.

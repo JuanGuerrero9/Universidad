@@ -15,7 +15,7 @@ from django.views.decorators.http import require_http_methods
 
 from apps.institucional.models import *
 from apps.usuario.models import Persona, Usuario, Rol
-from apps.institucional.forms import PersonaForm, NuevoEstudianteForm, ProgramaForm, SemestreForm
+from apps.institucional.forms import PersonaForm, NuevoEstudianteForm, ProgramaForm, SemestreForm, ActualizarUsuarioForm
 
 
 
@@ -26,7 +26,7 @@ class UsuarioNuevo(TemplateView):
     ###  --- Vista donde se imprime el usuario y la contrasenia del nuevo usuario creado ---
 
     model = Usuario
-    template_name = 'Usuario/usuario_creado.html'
+    template_name = 'Institucional/funcionario/usuario_creado.html'
 
     def get_queryset(self, usuario):
         queryset = self.model.objects.filter(id = usuario).first()
@@ -46,7 +46,7 @@ class Recibo(TemplateView):
     ###  --- Vista donde se imprime el recibo luego de poner los datos del estudiante ---
 
     model = PagoRecibo
-    template_name = 'Institucional/recibo.html'
+    template_name = 'Institucional/funcionario/recibo.html'
 
     def get_queryset(self, variables):
         queryset = self.model.objects.filter(id_pago_recibo = variables).first()
@@ -71,7 +71,7 @@ class RevisarNotas(TemplateView):
     ###  --- Vista de la pestaña de ESTUDIANTE para observar las notas de las asignaturas matriculadas ---
 
     model = AsignaturaUsuario
-    template_name = 'Institucional/revisar_notas.html'
+    template_name = 'Institucional/estudiante/revisar_notas.html'
 
     def get_queryset(self, usuario):
         queryset = self.model.objects.filter(usuario = usuario, activo= True,horario_asignatura= not None)
@@ -98,7 +98,7 @@ class HorarioAsignaturas(TemplateView):
     ###  --- Permite observar desde la pestaña de ESTUDIANTE los horarios que tienen las asignaturas ya matriculadas ---
 
     model = AsignaturaUsuario
-    template_name = 'Institucional/horario_asignaturas.html'
+    template_name = 'Institucional/estudiante/horario_asignaturas.html'
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -127,7 +127,7 @@ class EstudiantesMatriculados(TemplateView):
     ###  --- Renderiza desde la pestaña de DOCENTE los estudiantes matriculados en una asignatura ---
 
     model = AsignaturaUsuario
-    template_name = 'Institucional/estudiantes_matriculados.html'
+    template_name = 'Institucional/docente/estudiantes_matriculados.html'
 
     def get_queryset(self, horario):
         queryset = self.model.objects.filter(horario_asignatura= horario)
@@ -141,7 +141,30 @@ class EstudiantesMatriculados(TemplateView):
         return render(request, self.template_name, self.get_context_data())
 
 
+class ActualizarNotas(UpdateView):
 
+    model = NotaFinal
+    form_class = ActualizarUsuarioForm
+    template_name = 'Institucional/docente/actualizar_notas.html'
+
+    def post(self,request,*args,**kwargs):
+        if request.is_ajax():
+            form = self.form_class(request.POST,instance = self.get_object())
+            if form.is_valid():
+                form.save()
+                mensaje = 'Las notas se han actualizado correctamente!'
+                error = 'No hay error!'
+                response = JsonResponse({'mensaje': mensaje, 'error': error})
+                response.status_code = 201
+                return response
+            else:
+                mensaje = 'Las notas no se han podido actualizar!'
+                error = form.errors
+                response = JsonResponse({'mensaje': mensaje, 'error': error})
+                response.status_code = 400
+                return response
+        else:
+            return redirect('index')
 
 
 
@@ -151,7 +174,7 @@ class EditarUsuario(UpdateView):
 
     model = Persona
     form_class = PersonaForm
-    template_name = 'Institucional/editar_usuario.html'
+    template_name = 'Usuario/editar_usuario.html'
     success_url = reverse_lazy('index')
 
     def post(self, request, *args, **kwargs):
@@ -160,7 +183,7 @@ class EditarUsuario(UpdateView):
             email                = request.POST['usuario_email'],
             codigo_universitario = request.POST['usuario_codigo']
         )
-        formulario = self.form_class(request.POST)
+        formulario = self.form_class(request.POST, instance= self.get_object())
         if formulario.is_valid():
             formulario.save()
             return HttpResponse('El formulario se ha Actualizado Satisfactoriamente!')
@@ -173,7 +196,7 @@ class DatosCrearUsuario(View):
 
     ###  --- Vista que desde la pestaña de FUNCIONARIO te permite ingresar los datos necesarios para generar un usuario ---
 
-    template_name = 'Usuario/datos_crear_usuario.html'
+    template_name = 'Institucional/funcionario/datos_crear_usuario.html'
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -263,7 +286,7 @@ class GenerarRecibo(View):
     form_class = NuevoEstudianteForm
     second_form_class = ProgramaForm
 
-    template_name  = 'Institucional/generar_recibo.html'
+    template_name  = 'Institucional/funcionario/generar_recibo.html'
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -314,7 +337,7 @@ class ElegirHorarioEstudiante(View):
     ###  --- Te permite elegir desde la pestaña ESTUDIANTE el horario que deseas ver en la asignatura a matricular ---
 
     model = HorarioAsignatura
-    template_name = 'Institucional/elegir_horario.html'
+    template_name = 'Institucional/estudiante/elegir_horario.html'
 
     def get_queryset(self, asignatura):
         queryset = self.model.objects.filter(Asignatura = asignatura)
@@ -336,7 +359,6 @@ class ElegirHorarioEstudiante(View):
                 asignatura = HorarioAsignatura.objects.filter(id_horario=int(request.POST['asignatura_horario'])).first()
             except:
                 asignatura = None
-            print(asignatura)
             if asignatura != None:
                 usuario = AsignaturaUsuario.objects.filter(usuario= request.user, asignatura= asignatura.Asignatura).first()
                 usuario.horario_asignatura = asignatura
@@ -361,7 +383,9 @@ class ElegirHorarioEstudiante(View):
 
 class SimuladorPagoRecibo(View):
 
-    template_name = 'Institucional/simulador_pago_recibo.html'
+    ###  --- Realiza la simulacion del pago de recibo validando el codigo y el saldo disponible de la tarjeta de credito ---
+
+    template_name = 'Institucional/funcionario/simulador_pago_recibo.html'
 
     def get_context_data(self, **kwargs):
         context = {}
@@ -429,7 +453,7 @@ class MatricularAsignatura(View):
     
     ###  --- Desde la pestaña ESTUDIANTE renderiza las asignaturas disponibles a matricular y hace una lista de las ya matriculadas ---
 
-    template_name = 'Institucional/matricular_asignaturas.html'
+    template_name = 'Institucional/estudiante/matricular_asignaturas.html'
 
     
     def get_context_data(self, usuario, **kwargs):
@@ -491,7 +515,7 @@ class MatricularAsignatura(View):
 class EditarNotas(View):
 
     model = HorarioAsignatura
-    template_name = 'Institucional/editar_notas.html'
+    template_name = 'Institucional/docente/editar_notas.html'
 
     def get_queryset(self, horario):
         queryset = self.model.objects.filter(id_horario = horario).first()
@@ -503,7 +527,7 @@ class EditarNotas(View):
         estudiantes_activos = AsignaturaUsuario.objects.filter(horario_asignatura = horario, activo= True)
         notas = []
         for estudiante in estudiantes_activos:
-            notas.append(NotaFinal.objects.filter(asignatura= estudiante))
+            notas.append(NotaFinal.objects.filter(asignatura= estudiante).first())
         context['estudiantes'] = estudiantes_activos
         context['notas'] = notas
         return context
@@ -516,7 +540,7 @@ class EditarNotas(View):
 class ElegirHorarioDocente(View):
     
     model = HorarioAsignatura
-    template_name = 'Institucional/elegir_horario_docente.html'
+    template_name = 'Institucional/docente/elegir_horario_docente.html'
 
     def get_queryset(self, docente):
         queryset = self.model.objects.filter(docente = docente)
@@ -540,7 +564,7 @@ class ElegirHorarioDocente(View):
 class HorarioEstudiantesMatriculados(View):
 
     model = HorarioAsignatura
-    template_name = 'Institucional/horario_estudiantes_matriculados.html'
+    template_name = 'Institucional/docente/horario_estudiantes_matriculados.html'
 
     def get_queryset(self, docente):
         queryset = self.model.objects.filter(docente = docente)

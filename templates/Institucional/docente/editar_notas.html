@@ -1,9 +1,12 @@
 {% extends 'index.html' %}
+{% load static %}
+
 
     {% block title %} Login {% endblock title %}
 
     {% block extra_js %}
-    
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="{% static 'js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
     
     
     {% endblock extra_js %}
@@ -33,23 +36,26 @@
                           </tr>
                         </thead>
                         <tbody>
-                        {% for i in estudiantes %}
+                        {% for estudiante in estudiantes %}
                           <tr>
-                            <th scope="row">{{ i.usuario.codigo_universitario }}</th>
-                            <td>{{ i.usuario.persona.nombres }}</td>
-                            <td>{{ i.usuario.persona.apellidos }}</td>
-                            {% for j in notas %}
-                            <td>{{ j.cortes.nota_corte1 }}</td>
-                            <td>{{ j.cortes.nota_corte2 }}</td>
-                            <td>{{ j.cortes.nota_corte3 }}</td>
-                            <td>{{ j.nota }}</td>
+                            <th scope="row">{{ estudiante.usuario.codigo_universitario }}</th>
+                            <td>{{ estudiante.usuario.persona.nombres }}</td>
+                            <td>{{ estudiante.usuario.persona.apellidos }}</td>
+                            {% for nota in notas %}
+                            <td>{{ nota.cortes.nota_corte1 }}</td>
+                            <td>{{ nota.cortes.nota_corte2 }}</td>
+                            <td>{{ nota.cortes.nota_corte3 }}</td>
+                            <td>{{ nota.nota }}</td>
+                            <td><button type="button" class="btn btn-primary" onclick="abrir_modal_edicion('/institucional/actualizar_notas/'+{{ nota.id_nota_final }}+'/')">Editar</button></td>
                             {% endfor %}
-                            <td><button type="button" class="btn btn-primary">Editar</button></td>
                           </tr>
                         {% endfor %}
                         </tbody>
                       </table>
 
+                </div>
+                <div class="modal fade" id="edicion" role="dialog">
+                  hola
                 </div>
             </div>
             

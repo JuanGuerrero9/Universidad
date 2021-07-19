@@ -127,8 +127,6 @@ class NotaFinal(models.Model):
     nota                = models.IntegerField(default=0)
     asignatura          = models.ForeignKey(AsignaturaUsuario, on_delete= models.CASCADE, null=True)
 
-    def __str__(self):
-        return self.asignatura.nombre
 
 class Bancos(models.Model):
     id_banco        = models.AutoField(primary_key= True)
