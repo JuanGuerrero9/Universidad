@@ -118,9 +118,6 @@ class Cortes(models.Model):
     porcentaje_corte3           = models.IntegerField(default=0.40, editable= False)
     asignatura_usuario          = models.ForeignKey(AsignaturaUsuario, on_delete= models.CASCADE, null=True)
 
-    def __str__(self):
-        return self.asignatura_usuario
-
 class NotaFinal(models.Model):
     id_nota_final       = models.AutoField(primary_key= True)
     cortes              = models.ForeignKey(Cortes, on_delete= models.CASCADE, null= True)

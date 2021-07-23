@@ -22,6 +22,46 @@ function registrar() {
     });
 }
 
+function editar(){
+    activarBoton();
+    $.ajax({
+        data: $('#form_edicion').serialize(),
+        url: $('#form_edicion').attr('action'),
+        type: $('#form_edicion').attr('method'),
+        success: function (response) {
+            notificacionSuccess(response.mensaje);
+            setTimeout(() => {
+                cerrar_modal_edicion();
+            }, 2000)
+        },
+        error: function (error) {
+            notificacionError(error.responseJSON.mensaje);
+            mostrarErroresEdicion(error);
+            activarBoton();
+        }
+    });
+}
+
+function editarUsuario(){
+    activarBoton();
+    $.ajax({
+        data: $('#form_edicion').serialize(),
+        url: $('#form_edicion').attr('action'),
+        type: $('#form_edicion').attr('method'),
+        success: function (response) {
+            notificacionSuccess(response.mensaje);
+            setTimeout(() => {
+                reciboPagadoTarjeta();
+            }, 2000)
+        },
+        error: function (error) {
+            notificacionError(error.responseJSON.mensaje);
+            mostrarErroresCreacion(error);
+            activarBoton();
+        }
+    });
+}
+
 function pagarRecibo(){
     activarBoton();
     $.ajax({
@@ -30,9 +70,7 @@ function pagarRecibo(){
         type: $('#form_pagar').attr('method'),
         success: function (response) {
             confirmacionPagoTarjeta(response.mensaje);
-            setTimeout(() => {
-                reciboPagadoTarjeta(response);
-            }, 2000)
+            
         },
         error: function (error) {
             notificacionError(error.responseJSON.mensaje);
@@ -103,6 +141,15 @@ function mostrarErroresCreacion2(errores){
 	$('#errores').append(error);
 }
 
+function mostrarErroresEdicion(errores) {
+	$('#erroresEdicion').html("");
+	let error = "";
+	for (let item in errores.responseJSON.error) {
+		error += '<div class = "alert alert-danger" <strong>' + errores.responseJSON.error[item] + '</strong></div>';
+	}
+	$('#erroresEdicion').append(error);
+}
+
 // SweetAlerts
 
 function notificacionError(mensaje){
@@ -138,7 +185,10 @@ function confirmacionPagoTarjeta(mensaje){
             'Pagado!',
             'El recibo ha sido pagado satisfactoriamente.',
             'success'
-          )
+          ),
+          setTimeout(() => {
+            reciboPagadoTarjeta();
+            }, 2000)
         }
       })
 }
@@ -147,10 +197,8 @@ function confirmacionPagoTarjeta(mensaje){
 
 // Funciones de redireccion
 
-function reciboPagadoTarjeta(response) {
-    if (response.status == 201) {
-        window.location.href = `/`;
-    }
+function reciboPagadoTarjeta() {
+    window.location.href = `/`;
 }
 
 

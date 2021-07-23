@@ -34,7 +34,7 @@
                   </button>
                   <div class="collapse navbar-collapse" id="navbarResponsive">
                       <ul class="navbar-nav ml-auto">
-                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'institucional:editar_usuario' request.user.persona.id_persona %}">Configuración de Usuario</a></li>
+                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'institucional:editar_usuario' request.user.id %}">Configuración de Usuario</a></li>
                           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'logout' %}">Cerrar Sesion</a></li>
                       </ul>
                   </div>
@@ -91,7 +91,7 @@
                         <ul class="list-group">
                             <li class="list-group-item"><a href="{% url 'institucional:elegir_horario_docente' %}">Agregar notas</a></li>
                             <li class="list-group-item"><a href="{% url 'institucional:horario_estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
-                            <li class="list-group-item"><a href="">Horario de dictar asignaturas</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:horario_docente_asignaturas' %}">Horario de dictar asignaturas</a></li>
                         </ul>
                     </div>
                   </div>

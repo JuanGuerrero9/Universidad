@@ -80,7 +80,6 @@ class RevisarNotas(TemplateView):
     def get_context_data(self, **kwargs):
         context = {}
         asignaturas = self.get_queryset(self.request.user)
-        print(asignaturas)
         notas = []
         for asignatura in asignaturas:
             notas.append(NotaFinal.objects.filter(asignatura = asignatura))
@@ -141,9 +140,30 @@ class EstudiantesMatriculados(TemplateView):
         return render(request, self.template_name, self.get_context_data())
 
 
+class HorarioDocenteAsignaturas(TemplateView):
+
+    ###  --- Muestra el horario para dictar clases del DOCENTE ---
+
+    model = HorarioAsignatura
+    template_name = 'Institucional/docente/horario_docente_asignaturas.html'
+
+    def get_queryset(self, docente):
+        queryset = self.model.objects.filter(docente = docente)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        horarios = self.get_queryset(self.request.user)
+        context['horarios'] = horarios
+        return context
+
+    def get(self, request, *args, **kwargs):
+        return render(request, self.template_name, self.get_context_data())
+
+
 class ActualizarNotas(UpdateView):
 
-    model = NotaFinal
+    model = Cortes
     form_class = ActualizarUsuarioForm
     template_name = 'Institucional/docente/actualizar_notas.html'
 
@@ -178,16 +198,28 @@ class EditarUsuario(UpdateView):
     success_url = reverse_lazy('index')
 
     def post(self, request, *args, **kwargs):
-        Usuario.objects.filter(id = request.user.id).update(
+        if request.is_ajax():
+            Usuario.objects.filter(id = request.user.id).update(
             username             = request.POST['usuario_username'],
             email                = request.POST['usuario_email'],
             codigo_universitario = request.POST['usuario_codigo']
-        )
-        formulario = self.form_class(request.POST, instance= self.get_object())
-        if formulario.is_valid():
-            formulario.save()
-            return HttpResponse('El formulario se ha Actualizado Satisfactoriamente!')
-        return redirect(reverse('index'))
+            )
+            formulario = self.form_class(request.POST, instance= self.get_object())
+            if formulario.is_valid():
+                formulario.save()
+                mensaje = 'Se ha actualizado el usuario Correctamente!'
+                error = 'No hay error!'
+                response = JsonResponse({'mensaje': mensaje, 'error': error})
+                response.status_code = 201
+                return response
+            else:
+                mensaje = 'No se ha podido actualizar el usuario!'
+                error = formulario.errors
+                response = JsonResponse({'mensaje': mensaje, 'error': error})
+                response.status_code = 400
+                return response
+        else:
+            return redirect('index')
 
 
 
@@ -570,15 +602,17 @@ class HorarioEstudiantesMatriculados(View):
         queryset = self.model.objects.filter(docente = docente)
         return queryset
 
-    def get_context_data(self, usuario, **kwargs):
+    def get_context_data(self, **kwargs):
         context = {}
-        horarios = self.get_queryset(usuario)
+        horarios = self.get_queryset(self.request.user)
         context['horarios'] = horarios
         return context
 
     def get(self, request, *args, **kwargs):
-        return render(request, self.template_name, self.get_context_data(request.user))
+        return render(request, self.template_name, self.get_context_data())
 
     def post(self, request, *args, **kwargs):
         horario = request.POST['horario_estudiantes_matriculados']
         return redirect(reverse('institucional:estudiantes_matriculados', kwargs= {'horario_estudiantes': horario}))
+
+
