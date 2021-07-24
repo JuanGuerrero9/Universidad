@@ -254,7 +254,25 @@ class DatosCrearUsuario(View):
                 except:
                     recibo = None
                 if recibo is not None and recibo.esta_pago:
-                    rol = Rol.objects.filter(nombre__iexact = 'Estudiante').first()
+                    try:
+                        rol = Rol.objects.filter(nombre__iexact = 'Estudiante').first()
+                    except:
+                        permisos_defecto = ['add', 'change', 'delete', 'view']
+                        nuevo_grupo, creado= Group.objects.get_or_create(
+                            name = 'Estudiante'
+                            )
+                        permiso_nuevo = []
+                        for permiso in permisos_defecto:
+                            permiso_nuevo.append(Permission.objects.get_or_create(
+                                name= f'Can {permiso} estudiante',
+                                content_type= ContentType.objects.get_for_model(Rol),
+                                codename= f'{permiso}_estudiante'
+                            ))
+                        if creado:
+                            for permisos in permiso_nuevo:
+                                nuevo_grupo.permissions.add(permisos[0].id)
+                                nuevo_grupo.save()
+                        rol = Rol.objects.filter(nombre__iexact = 'Estudiante').first()    
                     persona = Persona.objects.filter(id_persona= recibo.persona.id_persona).first()
                     password = str(randint(1000000, 9999999))
                     pass_guardada = password
@@ -274,7 +292,7 @@ class DatosCrearUsuario(View):
                     asignaturas = Asignatura.objects.filter(semestre= recibo.semestre.id_semestre)
                     for asignatura in asignaturas:
                         UserAsignatura, _ = AsignaturaUsuario.objects.get_or_create(
-                            usuario     = request.user,
+                            usuario     = nuevo_usuario,
                             asignatura  = asignatura,
                             activo      = True
                         )

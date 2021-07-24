@@ -10,6 +10,8 @@ router= routers.DefaultRouter()
 
 urlpatterns = [ 
     path('generar_recibo/', GenerarReciboCreateAPIView.as_view(), name="generar_recibo"),
+    path('crear_usuario/', CrearUsuarioCreateAPIView.as_view(), name="crear_usuario"),
+    path('simulador_pago_recibo/', SimuladorPagoReciboCreateAPIView.as_view(), name="simulador_pago_recibo"),
 ]
 
 urlpatterns += router.urls
