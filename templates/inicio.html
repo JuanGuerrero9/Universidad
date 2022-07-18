@@ -1,10 +1,11 @@
 {% extends 'index.html' %}
+{% load static %}
 
     {% block title %} Pagina principal {% endblock title %}
 
     {% block extra_js %}
-    
-    
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" media="screen" />
     
     {% endblock extra_js %}
 
@@ -31,13 +32,167 @@
                     </div>
                   </div>
             </header>
-            <div class="row" style="margin-left: 0px;">
-                <div style="border: 1px solid black" class="col-6">
-                    <h3>Noticia1</h3>
-                </div>
-                <div style="border: 1px solid black" class="col-6">
-                    <h3>Noticia 2</h3>
-                </div>
+            <div class="row cachibache" style="margin-left: 0px;">
+                <div class="content_area col-10">
+                    <div class="main_content floatleft">
+                      <div class="left_coloum floatleft">
+                        <div class="single_left_coloum_wrapper">
+                          <h2 class="title">from   around   the   world</h2>
+                          <a class="more" href="#">more</a>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                        </div>
+                        <div class="single_left_coloum_wrapper">
+                          <h2 class="title">latest  articles</h2>
+                          <a class="more" href="#">more</a>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                          <div class="single_left_coloum floatleft"> <img src="{% static 'img/single_featured.png' %}" alt="" />
+                            <p>Lorem ipsum dolor sit amet, consectetur</p>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper 
+                              dolor eu mattis.</p>
+                            <a class="readmore" href="#">read more</a> </div>
+                        </div>
+                        <div class="single_left_coloum_wrapper gallery">
+                          <h2 class="title">gallery</h2>
+                          <a class="more" href="#">more</a> <img src="{% static 'img/single_featured.png' %}" alt="" /> <img src="{% static 'img/single_featured.png' %}" alt="" /> <img src="img/single_featured.png" alt="" /> <img src="img/single_featured.png" alt="" /> <img src="img/single_featured.png" alt="" /> <img src="img/single_featured.png" alt="" /> </div>
+                        <div class="single_left_coloum_wrapper single_cat_left">
+                          <h2 class="title">tech news</h2>
+                          <a class="more" href="#">more</a>
+                          <div class="single_cat_left_content floatleft">
+                            <h3>Lorem ipsum dolor sit amet conse ctetur adipiscing elit </h3>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper dolor ...interdum</p>
+                            <p class="single_cat_left_content_meta">by <span>John Doe</span> |  29 comments</p>
+                          </div>
+                          <div class="single_cat_left_content floatleft">
+                            <h3>Lorem ipsum dolor sit amet conse ctetur adipiscing elit </h3>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper dolor ...interdum</p>
+                            <p class="single_cat_left_content_meta">by <span>John Doe</span> |  29 comments</p>
+                          </div>
+                          <div class="single_cat_left_content floatleft">
+                            <h3>Lorem ipsum dolor sit amet conse ctetur adipiscing elit </h3>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper dolor ...interdum</p>
+                            <p class="single_cat_left_content_meta">by <span>John Doe</span> |  29 comments</p>
+                          </div>
+                          <div class="single_cat_left_content floatleft">
+                            <h3>Lorem ipsum dolor sit amet conse ctetur adipiscing elit </h3>
+                            <p>Nulla quis lorem neque, mattis venenatis lectus. In interdum ullamcorper dolor ...interdum</p>
+                            <p class="single_cat_left_content_meta">by <span>John Doe</span> |  29 comments</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="right_coloum floatright">
+                        <div class="single_right_coloum">
+                          <h2 class="title">from the desk</h2>
+                          <ul>
+                            <li>
+                              <div class="single_cat_right_content">
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit</p>
+                                <p>Nulla quis lorem neque, mattis venen atis lectus. In interdum ull amcorper dolor eu mattis.</p>
+                                <p class="single_cat_right_content_meta"><a href="#"><span>read more</span></a> 3 hours ago</p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_cat_right_content">
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit</p>
+                                <p>Nulla quis lorem neque, mattis venen atis lectus. In interdum ull amcorper dolor eu mattis.</p>
+                                <p class="single_cat_right_content_meta"><a href="#"><span>read more</span></a> 3 hours ago</p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_cat_right_content">
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit</p>
+                                <p>Nulla quis lorem neque, mattis venen atis lectus. In interdum ull amcorper dolor eu mattis.</p>
+                                <p class="single_cat_right_content_meta"><a href="#"><span>read more</span></a> 3 hours ago</p>
+                              </div>
+                            </li>
+                          </ul>
+                          <a class="popular_more" href="#">more</a> </div>
+                        <div class="single_right_coloum">
+                          <h2 class="title">editorial</h2>
+                          <div class="single_cat_right_content editorial"> <img src="{% static 'img/editorial_img.png' %}" alt="" />
+                            <h3 style="font-size: 15px;">Lorem ipsum dolor sit amet con se cte tur adipiscing elit</h3>
+                          </div>
+                          <div class="single_cat_right_content editorial"> <img src="{% static 'img/editorial_img.png' %}" alt="" />
+                            <h3 style="font-size: 15px;">Lorem ipsum dolor sit amet con se cte tur adipiscing elit</h3>
+                          </div>
+                          <div class="single_cat_right_content editorial"> <img src="{% static 'img/editorial_img.png' %}" alt="" />
+                            <h3 style="font-size: 15px;">Lorem ipsum dolor sit amet con se cte tur adipiscing elit</h3>
+                          </div>
+                          <div class="single_cat_right_content editorial"> <img src="{% static 'img/editorial_img.png' %}" alt="" />
+                            <h3 style="font-size: 15px;">Lorem ipsum dolor sit amet con se cte tur adipiscing elit</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="sidebar floatright">
+                      <div class="single_sidebar"> <img src="{% static 'img/add1.png' %}" alt="" /> </div>
+                      <div class="single_sidebar">
+                      </div>
+                      <div class="single_sidebar">
+                        <div class="popular">
+                          <h2 class="title">Popular</h2>
+                          <ul>
+                            <li>
+                              <div class="single_popular">
+                                <p>Sept 24th 2045</p>
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit <a href="#" class="readmore">Read More</a></p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_popular">
+                                <p>Sept 24th 2045</p>
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit <a href="#" class="readmore">Read More</a></p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_popular">
+                                <p>Sept 24th 2045</p>
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit <a href="#" class="readmore">Read More</a></p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_popular">
+                                <p>Sept 24th 2045</p>
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit <a href="#" class="readmore">Read More</a></p>
+                              </div>
+                            </li>
+                            <li>
+                              <div class="single_popular">
+                                <p>Sept 24th 2045</p>
+                                <p>Lorem ipsum dolor sit amet conse ctetur adipiscing elit <a href="#" class="readmore">Read More</a></p>
+                              </div>
+                            </li>
+                          </ul>
+                          <a class="popular_more">more</a> </div>
+                      </div>
+                      <div class="single_sidebar"> <img src="{% static 'img/add1.png' %}" alt="" /> </div>
+                      <div class="single_sidebar">
+                        <h2 class="title">ADD</h2>
+                        <img src="img/add2.png" alt="" /> </div>
+                    </div>
+                  </div>
             </div>
     
         

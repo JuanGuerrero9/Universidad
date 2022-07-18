@@ -16,35 +16,29 @@
                 </div>
             </header>
         
-            <div class="row">
-                <div class="col-6">
-                    <form id="form_creacion" action="{% url 'institucional:generar_recibo' %}" method="POST">
-
-
-                        {% csrf_token %}
-                        <div id="errores">
-
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="alert alert-primary p-0" role="alert">
+                            <h3 class="text-center p-0 m-0">INGENIERIA</h3>
                         </div>
-
-                        {{ form.as_p }}
-
-                        {{ form2.as_p }}
-
-                        <label for="exampleFormControlInput1" class="form-label">Semestre</lab>
-                        <select class="form-select" aria-label="Default select example" name="semestre_estudiante">
-                            {% for semestres in semestre %}
-                            <option value="{{ semestres.id_semestre }}">{{ semestres.nombre }}</option>
-                            {% endfor %}
-                        </select>
-                        <br>
-                        <br>
-                        <div class="d-grid gap-2 col-4 mx-auto align-items-left">
-                            <button id="boton_creacion" class="btn btn-primary" type="button" onclick="registrar();">Generar recibo</button>
+                        {% for prog in programas %}
+                        <button class="btn btn-success btn-sm btn-block" style="float: center;" type="button" onclick="eleccion_estudiante({{ prog.id }})"><strong>{{ prog.nombre }}</strong></button>
+                        {% endfor %}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="alert alert-primary p-0" role="alert">
+                            <h3 class="text-center p-0 m-0">ADMINISTRACION</h3>
                         </div>
-                    </form>
+                        <button class="btn btn-primary btn-sm btn-block" style="float: center;" type="button" onclick="abrir_modal_edicion('/institucional/elegir_semestre/'+{{ prog.id }}+'/')"><strong>Administracion de empresas</strong></button>
+                        <button class="btn btn-primary btn-sm btn-block" style="float: center;" type="button" onclick="abrir_modal_edicion('/institucional/elegir_semestre/'+{{ prog.id }}+'/')"><strong>Comercio internacional</strong></button>
+                    </div>
                 </div>
+
             </div>
-            
+            <div class="modal fade" id="edicion" role="dialog">
+
+            </div>
     
 
     {% endblock body %}

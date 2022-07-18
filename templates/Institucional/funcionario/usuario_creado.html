@@ -3,9 +3,23 @@
     {% block title %} Usuario creado {% endblock title %}
 
     {% block extra_js %}
-    
-    
-    
+    <script>
+        function usuario_creado() {
+            let password = localStorage.getItem("Password");
+            let id_usuario = localStorage.getItem("id_Usuario");
+            let access_token = localStorage.getItem('Token'); 
+            $.ajax({
+                url: `/rest/institucional/tramites_funcionario/${id_usuario}/usuario_creado/`,
+                method: 'GET', 
+                headers: { "Authorization": 'Bearer ' + access_token},
+                success: function(data) {  
+                    document.getElementById("usuario").innerHTML = data.usuario;
+                    document.getElementById("password").innerHTML = password;
+                    document.getElementById("persona").innerHTML = data.persona; 
+                },
+            });
+        }
+    </script>
     {% endblock extra_js %}
 
     {% block body %}
@@ -20,11 +34,11 @@
                 <div class="col-6">
                     <div class="alert alert-success col align-self-center" role="alert">
                         <h3 style="text-align: center">Se ha creado exitosamente el Usuario!</h3><br>
-                        <p style="text-align: center">Estos datos deben ser entregados al nuevo estudiante</p><br>
+                        <p style="text-align: center">Estos datos deben ser entregados al nuevo estudiante <H5 style="text-align: center" id="persona"></H5></p><br>
                         <p style="text-align: center"><strong>Nombre del Usuario:</strong></p>
-                        <H2 style="text-align: center">{{ usuario.username }}</H2>
+                        <H2 style="text-align: center" id="usuario"></H2>
                         <p style="text-align: center"><strong>Contraseña del Usuario:</strong></p>
-                        <h2 style="text-align: center">{{ password }}</h2>
+                        <h2 style="text-align: center" id="password"></h2>
                     </div>
                 </div>
             </div>

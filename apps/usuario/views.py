@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 
 
-class Index(LoginRequiredMixin,TemplateView):
+class Index(TemplateView):
 
     template_name = 'inicio.html'
 
@@ -30,7 +30,7 @@ class Login(FormView):
             return super(Login, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
-        user = authenticate(username= form.cleaned_data['username'], password= form.cleaned_data['password'])
+        user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
         if user:
             login(self.request, form.get_user())
         return super(Login, self).form_valid(form)

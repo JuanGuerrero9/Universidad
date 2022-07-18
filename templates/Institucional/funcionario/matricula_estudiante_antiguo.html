@@ -1,0 +1,94 @@
+<div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 class="modal-title">Matricula de semestre</h2>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form id="form_creacion"
+            action="{% url 'routers_institucional:tramites_funcionario-recibo-estudiante-antiguo' pk %}" 
+            method="POST">
+            <div class="modal-body">
+                
+                <div class="alert alert-primary p-0" role="alert">
+                    <h3 class="text-center p-0 m-0">Estudiante ya matriculado</h3>
+                </div>
+                {% csrf_token %}
+                <div id="erroresEdicion">
+
+                </div>
+                <label>Listado de estudiantes</label>
+                <select class="form-control selectpicker" id="estudiantes">
+
+                </select>
+
+
+            </div>
+            
+            <div class="modal-footer">
+                <button class="btn btn-danger" type="button" onclick="cerrar_modal_edicion();">Cancelar</button>
+                <button id="boton_creacion2" class="btn btn-primary" type="button"
+                    onclick="agregar();">Confirmar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    let access_token = localStorage.getItem('Token');
+    $.ajax({
+        url: `/rest/institucional/tramites_funcionario/usuarios_antiguos_para_matricuar/`,
+        method: 'GET', 
+        headers: { "Authorization": 'Bearer ' + access_token},
+        success: function(data) {  
+            let select_estudiantes = document.getElementById('estudiantes');
+            let estudiantes = data
+            for (var i = 0; i <= estudiantes.length; i++){
+                let id_horario = horarios[i]['id_persona'];
+                let opt = document.createElement('option');
+                if (typeof(id_horario) !== 'undefined') {
+                    opt.value = id_horario;
+                }
+                opt.text = `${estudiantes[i]['nombre_completo']} ${estudiantes[i]['cedula_ciudadano']} }`
+                select_estudiantes.appendChild(opt);
+            }
+
+        },
+    });
+
+    function agregar() {
+        let access_token = localStorage.getItem('Token'); 
+        activarBoton();
+        $.ajax({
+            data: $('#form_creacion').serialize(),
+            url: $('#form_creacion').attr('action'),
+            type: $('#form_creacion').attr('method'),
+            headers: { "Authorization": 'Bearer ' + access_token},
+            success: function (response) {
+                // guardar informacion en el local storage 
+                localStorage.setItem("Codigo", response.codigo);
+                localStorage.setItem("Persona", response.persona);
+                notificacionSuccess(response.mensaje)
+                setTimeout(() => {
+                    redireccion_url("/institucional/recibo/");
+
+                }, 1000)
+            },
+            error: function (error) {
+                if(error.responseJSON.detail) {
+                    notificacionError("Su sesión ha caducado. Por favor vuelva a iniciarla.");
+                    redireccion_url("/accounts/login/?next=/logout/");
+
+                }
+                else if(error.responseJSON.error) {
+                    notificacionError(error.responseJSON.error);
+                    activarBoton();
+                }
+                
+            }
+        });
+    }
+</script>
+
+

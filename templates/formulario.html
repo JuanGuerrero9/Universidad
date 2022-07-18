@@ -3,7 +3,43 @@
     {% block title %} Login {% endblock title %}
 
     {% block extra_js %}
-    
+    <script>
+        function iniciar_sesion() {
+            activarBoton();
+            console.log($('#form_login').serialize())
+            $.ajax({
+                data: $('#form_login').serialize(),
+                url: $('#form_login').attr('action'),
+                type: $('#form_login').attr('method'),
+                success: function (response) {
+                    // guardar informacion en el local storage 
+                    localStorage.setItem("Token", response.access);
+                    localStorage.setItem("Refresh", response.refresh);
+                    console.log(response)
+                    notificacionSuccess(response.message)
+                    setTimeout(() => {
+                        let rest_url = `/rest/institucional/tramites_funcionario/plantilla_inicio/`
+                        let url = localStorage.setItem("Url", "/")
+                        $.ajax({
+                            cache: false,  
+                            url: rest_url,
+                            method: 'GET', 
+                            headers: { "Authorization": 'Bearer ' + response.access},
+                            success: function(data) {  
+                                redireccion_url("/");
+                            },
+                        });
+
+                    }, 1000)
+                },
+                error: function (error) {
+                    notificacionError(error.responseJSON.mensaje);
+                    mostrarErroresCreacion(error);
+                    activarBoton();
+                }
+            });
+        }
+    </script>
     
     {% endblock extra_js %}
 
@@ -19,13 +55,13 @@
             <div class="main">
                 <div class="col-md-6 col-sm-12">
                     <div class="login-form">
-                    <form action="" method='post'>
+                    <form id="form_login" action="{% url 'token_obtain_pair' %}" method='POST'>
                         {% csrf_token %}
                         <h5>Username</h5>
                         {{ form.username }}
                         <h5>Password</h5>
                         {{ form.password }}
-                        <button type="submit" class="btn btn-black">Iniciar sesion</button>
+                        <button type="button" class="btn btn-black" onclick="iniciar_sesion();">Iniciar sesion</button>
                     </form>
                     </div>
                 </div>

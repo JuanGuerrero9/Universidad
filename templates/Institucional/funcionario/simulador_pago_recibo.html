@@ -52,6 +52,35 @@ input:focus{border-bottom:1px solid #1abc9c; outline:none;}
 </style>
 
 
+    <script>
+        function realizar_pago_recibo() {
+            let access_token = localStorage.getItem('Token'); 
+            activarBoton();
+            $.ajax({
+                data: $('#form_pagar').serialize(),
+                url: $('#form_pagar').attr('action'),
+                type: $('#form_pagar').attr('method'),
+                headers: { "Authorization": 'Bearer ' + access_token},
+                success: function (data) {
+                    localStorage.setItem('Codigo_recibo', data.codigo_recibo)
+                    localStorage.setItem('Valor_recibo', data.valor_recibo)
+                    localStorage.setItem('Numero_tarjeta', data.numero_tarjeta)
+                    localStorage.setItem('Saldo_tarjeta', data.saldo_tarjeta)
+                    notificacionSuccess(data.mensaje)
+                    
+                    setTimeout(() => {
+                        redireccion_url("/institucional/recibo_pagado/");
+                    }, 1000)
+                },
+                error: function (error) {
+                    notificacionError(error.responseJSON.mensaje);
+                    mostrarErroresCreacion(error);
+                    activarBoton();
+                }
+            });
+        }
+    </script>
+
     {% endblock extra_js %}
 
     {% block body %}
@@ -63,7 +92,7 @@ input:focus{border-bottom:1px solid #1abc9c; outline:none;}
             </header>
         
             <div class="row justify-content-center">
-                <form method="POST" id="form_pagar" action="{% url 'institucional:simulador_pago_recibo' %}">
+                <form method="POST" id="form_pagar" action="{% url 'routers_institucional:tramites_funcionario-simulador-pago-recibo' %}">
                     {% csrf_token %}
                     <div id="errores">
 
@@ -74,7 +103,7 @@ input:focus{border-bottom:1px solid #1abc9c; outline:none;}
 
                     <div class="col-10">
                         <h6>Ingrese el codigo de pago</h6>
-                        <input class="form-control form-control-lg" name="codigo_de_pago" type="number" placeholder="Digite codigo de pago" aria-label=".form-control-lg example" required>
+                        <input class="form-control form-control-lg" name="codigo_recibo" type="number" placeholder="Digite codigo de pago" aria-label=".form-control-lg example">
                         <br>
                         <br>
                     </div>
@@ -82,23 +111,23 @@ input:focus{border-bottom:1px solid #1abc9c; outline:none;}
 
                         <div class="container ">
                             <div class="tarjetaCredito">
-                            <button id="boton_creacion" class="proceed" type="button" onclick="pagarRecibo();"><svg class="sendicon" width="24" height="24" viewBox="0 0 24 24">
+                            <button id="boton_creacion" class="proceed" type="button" onclick="realizar_pago_recibo();"><svg class="sendicon" width="24" height="24" viewBox="0 0 24 24">
                             <path d="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"></path>
                             </svg></button>
                             <img src="https://seeklogo.com/images/V/VISA-logo-62D5B26FE1-seeklogo.com.png" class="logo-card">
                             <label for="exampleFormControlInput1" class="form-label">Banco al que pertenece la tarjeta</label>
-                                <select class="form-select" aria-label="Default select example" name="banco_tarjeta" style="background: #16181a; color: white">
+                                <select class="form-select" aria-label="Default select example" name="banco" style="background: #16181a; color: white">
                                     {% for banco in bancos %}
-                                    <option value="{{ banco.id_banco }}">{{ banco.nombre_banco }}</option>
+                                    <option value="{{ banco.id }}">{{ banco.nombre_banco }}</option>
                                     {% endfor %}
                                 </select>
                             <br>
                             <label>Numero de la tarjeta:</label>
-                            <input id="user" type="number" name="numero_tarjeta_credito" class="input cardnumber"  placeholder="XXXX XXXX XXXX XXXX" required>
+                            <input id="user" type="number" name="numero_tarjeta" class="input cardnumber"  placeholder="XXXX XXXX XXXX XXXX" required>
                             <label>Nombre del titular:</label>
-                            <input class="input name"  placeholder="Ej: Juan Guerrero" name="propietario_tarjeta">
+                            <input class="input name"  placeholder="Ej: Juan Guerrero" name="propietario">
                             <label class="toleft">CCV:</label>
-                            <input class="input toleft ccv" placeholder="321" type="number" name="codigo_seguridad_tarjeta">
+                            <input class="input toleft ccv" placeholder="321" type="number" name="codigo_seguridad">
                             </div>
                             <div class="receipt">
                                 

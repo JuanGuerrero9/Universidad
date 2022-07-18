@@ -1,30 +1,15 @@
 from rest_framework import serializers
-from django.contrib.auth import password_validation, authenticate
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+
 from apps.usuario.models import Usuario
 
-class UsuarioSerializer(serializers.ModelSerializer):
+class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    pass
+
+class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
-        fields = ['nombre_usuario', 'email', 'codigo_universitario']
-
-
-
-
-class UsuarioLoginSerializer(serializers.ModelSerializer):
-
-    def validacion(self, data):
-
-        usuario = authenticate(nombre_usuario= data['nombre_usuario'], password= data['password'])
-        if not usuario:
-            raise serializers.ValidationError('El usuario o la contraseña se encuentran de manera incorrecta')
-
-        self.context['usuario'] = usuario
-        return data
-
-
-    def crear(self, data):
-        token, created= Token.objects.get_or_create(user= self.context['usuario'])
-        return self.context['usuario'], token.key
+        fields = ('username','email')
 
 
 

@@ -5,9 +5,33 @@
     {% block title %} Editar Notas {% endblock title %}
 
     {% block extra_js %}
-    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-    <script src="{% static 'js/lib/data-table/dataTables.bootstrap.min.js' %}"></script>
-    
+    <script>
+      function edicion_notas() {
+        let access_token = localStorage.getItem('Token');
+        $.ajax({
+            url: `/rest/institucional/tramites_funcionario/agregar_notas_estudiante/`,
+            method: 'GET', 
+            headers: { "Authorization": 'Bearer ' + access_token},
+            success: function(data) {
+                let estudiantes = data.estudiantes
+                console.log(estudiantes)
+                $('#datatablesSimple tbody').html("");
+                for (let i = 0; i < estudiantes.length; i++) {
+                    let fila = '<tr>';
+                    fila += '<td>' + estudiantes[i]['asignatura'] + '</td>';
+                    fila += '<td><button type = "button" class = "btn btn-link btn-sm"';
+                    fila += ` onclick = "abrir_modal_agregar_notas('/institucional/actualizar_notas/', ${estudiantes[i]['id']});"> ${estudiantes[i]['codigo']} </button></td>`
+                    fila += '<td>' + estudiantes[i]["estudiante"] + '</td>';
+                    fila += '<td>' + estudiantes[i]["nota_corte_1"] + '</td>';
+                    fila += '<td>' + estudiantes[i]["nota_corte_2"] + '</td>';
+                    fila += '<td>' + estudiantes[i]["nota_corte_3"] + '</td>';
+                    fila += '</tr>';
+                    $('#datatablesSimple tbody').append(fila);
+                }
+            },
+        });
+      }
+    </script>
     
     {% endblock extra_js %}
 
@@ -22,40 +46,27 @@
             <div class="row">
                 <div class="col-11">
 
-                    <table class="table table-dark table-striped">
+                    <table id="datatablesSimple" class="table table-striped table-bordered dt-responsive nowrap table-dark"style="width:100%">
                         <thead>
                           <tr>
-                            <th scope="col">Codigo universitario</th>
-                            <th scope="col">Nombres</th>
-                            <th scope="col">Apellidos</th>
+                            <th scope="col">Asignatura</th>
+                            <th scope="col">Código</th>
+                            <th scope="col">Estudiante</th>
                             <th scope="col">Nota corte 1</th>
                             <th scope="col">Nota corte 2</th>
                             <th scope="col">Nota corte 3</th>
                             <th scope="col">Nota Final</th>
-                            <th scope="col">Editar</th>
+                            
                           </tr>
                         </thead>
                         <tbody>
-                        {% for estudiante in estudiantes %}
-                          <tr>
-                            <th scope="row">{{ estudiante.usuario.codigo_universitario }}</th>
-                            <td>{{ estudiante.usuario.persona.nombres }}</td>
-                            <td>{{ estudiante.usuario.persona.apellidos }}</td>
-                            {% for nota in notas %}
-                            <td>{{ nota.cortes.nota_corte1 }}</td>
-                            <td>{{ nota.cortes.nota_corte2 }}</td>
-                            <td>{{ nota.cortes.nota_corte3 }}</td>
-                            <td>{{ nota.nota }}</td>
-                            <td><button type="button" class="btn btn-primary" onclick="abrir_modal_edicion('/institucional/actualizar_notas/'+{{ nota.id_nota_final }}+'/')">Editar</button></td>
-                            {% endfor %}
-                          </tr>
-                        {% endfor %}
+                        
                         </tbody>
                       </table>
 
                 </div>
                 <div class="modal fade" id="edicion" role="dialog">
-                  hola
+
                 </div>
             </div>
             

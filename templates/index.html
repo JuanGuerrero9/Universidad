@@ -6,19 +6,10 @@
         <meta charset="utf-8">
         <title>  {% block title %}  {% endblock title %} </title>
         <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
-        <link rel="stylesheet" href="{% static 'css/all.css' %}">
-        <script src="https://unpkg.com/@popperjs/core@2"></script>
-        <script src="{% static 'jquery/jquery.js' %}"></script>
-        <script src="{% static 'js/bootstrap.js' %}"></script>
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta.2/css/bootstrap.css" rel="stylesheet"/>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
-        
-        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <script src="{% static 'js/main.js' %}"></script>
-
-        <script src="{% static 'fullcalendar/lib/main.js' %}"></script>
         <link rel="stylesheet" href="{% static 'fullcalendar/lib/main.css' %}">
-        <script src="{% static 'fullcalendar/lib/locales-all.js' %}"></script>
+        <link href="{% static 'css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" />
+        <link href="{% static 'css/responsive.bootstrap4.min.css' %}" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
         {% block extra_js %} {% endblock extra_js %}
     </head>
@@ -34,7 +25,7 @@
                   </button>
                   <div class="collapse navbar-collapse" id="navbarResponsive">
                       <ul class="navbar-nav ml-auto">
-                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'institucional:editar_usuario' request.user.id %}">Configuración de Usuario</a></li>
+                          <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="">Configuración de Usuario</a></li>
                           <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded js-scroll-trigger" href="{% url 'logout' %}">Cerrar Sesion</a></li>
                       </ul>
                   </div>
@@ -43,7 +34,6 @@
         </div>
         <div class="col-3" style="margin-top: 100px;">
           <div id="accordion" style="margin-left: 50px; padding-top: 20px;">
-              {% if request.user|has_group:'Funcionario' %}
                 <div class="card">
                   <div class="card-header">
                     <a class="card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
@@ -54,14 +44,12 @@
                     <div class="card-body">
                         <ul class="list-group">
                             <li class="list-group-item"><a href="{% url 'institucional:generar_recibo' %}">Generar recibo</a></li>
-                            <li class="list-group-item"><a href="{% url 'institucional:datos_crear_usuario' %}">Crear Usuario</a></li>
+                            <li class="list-group-item"><button type="button" class="btn btn-link p-0 m-0"  onclick="eleccion_tipo_usuario()">Crear Usuario</button></li>
                             <li class="list-group-item"><a href="{% url 'institucional:simulador_pago_recibo' %}">Simulador de pago de recibo</a></li>
                           </ul>
                     </div>
                   </div>
                 </div>
-              {% endif %}
-              {% if request.user|has_group:'Estudiante' %}
                 <div class="card">
                   <div class="card-header">
                     <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">
@@ -78,8 +66,6 @@
                     </div>
                   </div>
                 </div>  
-              {% endif %}
-              {% if request.user|has_group:'Docente' %}
                 <div class="card">
                   <div class="card-header">
                     <a class="collapsed card-link" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
@@ -89,14 +75,13 @@
                   <div id="collapseThree" class="collapse show">
                     <div class="card-body">
                         <ul class="list-group">
-                            <li class="list-group-item"><a href="{% url 'institucional:elegir_horario_docente' %}">Agregar notas</a></li>
-                            <li class="list-group-item"><a href="{% url 'institucional:horario_estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:editar_notas' %}">Agregar notas</a></li>
+                            <li class="list-group-item"><a href="{% url 'institucional:estudiantes_matriculados' %}">Revisar estudiantes matriculados</a></li>
                             <li class="list-group-item"><a href="{% url 'institucional:horario_docente_asignaturas' %}">Horario de dictar asignaturas</a></li>
                         </ul>
                     </div>
                   </div>
                 </div>
-              {% endif %}
               
               
             </div>
@@ -108,9 +93,24 @@
             {% endblock body %}
         </div>
       </div>
-    
+      <div class="modal fade" id="edicion" role="dialog">
+
+      </div>
 </body>
 
+<script src="{% static 'jquery/jquery.js' %}"></script>
+<script src="{% static 'js/bootstrap.js' %}"></script>
+<script src="{% static 'js/sweet_alert.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/rest.js' %}" defer></script>
+<script src="{% static 'fullcalendar/lib/locales-all.js' %}"></script>
+<script src="{% static 'fullcalendar/lib/main.js' %}"></script>
+<script src="{% static 'js/select2.js' %}"></script>
+<script src="{% static 'js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'js/datatables-simple-demo.js' %}"></script>
+<script src="{% static 'js/dataTables.bootstrap4.min.js' %}"></script>
 
 
 </html>

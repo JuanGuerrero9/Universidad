@@ -1,7 +1,7 @@
 from django import forms
 
-from apps.usuario.models import Persona
-from apps.institucional.models import Programa, Semestre, TarjetaCredito, Cortes
+from apps.usuario.models import Persona, Usuario
+from apps.institucional.models import *
 
 
 class PersonaForm(forms.ModelForm):
@@ -18,29 +18,28 @@ class PersonaForm(forms.ModelForm):
         
         widgets = {
             'nombres': forms.TextInput(
-                attrs= {
+                attrs={
                     'class': 'form-control'
                 }
             ),
             'apellidos': forms.TextInput(
-                attrs= {
+                attrs={
                     'class': 'form-control'
                 }
             ),
             'cedula_ciudadano': forms.NumberInput(
-                attrs= {
+                attrs={
                     'class': 'form-control'
                 }
             ),
             'imagen': forms.FileInput(
-                attrs= {
+                attrs={
                     'class': 'form-control'
                 }
             )
         }
 
-
-class NuevoEstudianteForm(forms.ModelForm):
+class NuevoUsuarioDocenteForm(forms.ModelForm):
     class Meta:
         model = Persona
         fields = ['nombres', 'apellidos', 'cedula_ciudadano']
@@ -69,12 +68,77 @@ class NuevoEstudianteForm(forms.ModelForm):
                 }
             )
         }
+    
+    def __init__(self, *args, **kwargs):
+        super(NuevoUsuarioDocenteForm, self).__init__(*args, **kwargs)
+        self.fields['correo_electronico'] = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'example@hotmail.com'}))
+
+class NuevoUsuarioEstudianteForm(forms.ModelForm):
+    class Meta:
+        model = PagoRecibo
+        fields = ('codigo',)
+        labels = {
+            'codigo': 'Digite el codigo de recibo'
+        }
+        widgets = {
+            'codigo': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': '# de Codigo'
+                }
+            )
+        }
+
+    def __init__(self, *args, **kwargs):
+        super(NuevoUsuarioEstudianteForm, self).__init__(*args, **kwargs)
+        self.fields['correo_electronico'] = forms.EmailField(widget=forms.EmailInput(attrs={'class':'form-control','placeholder': 'example@hotmail.com'}))
+
+class NuevoEstudianteForm(forms.ModelForm):
+    class Meta:
+        model = Persona
+        fields = ['nombres', 'apellidos', 'cedula_ciudadano']
+        labels = {
+            'nombres': 'Nombres del usuario',
+            'apellidos': 'Apellidos del usuario',
+            'cedula_ciudadano': 'Cedula de Ciudadania del Estudiante'
+        }
+        widgets = {
+            'nombres': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese sus nombres completos'
+                }
+            ),
+            'apellidos': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Ingrese sus apellidos completos'
+                }
+            ),
+            'cedula_ciudadano': forms.NumberInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Digite su cedula de ciudadania'
+                }
+            )
+        }
+    
+    def __init__(self, programa, *args, **kwargs):
+        super(NuevoEstudianteForm, self).__init__(*args, **kwargs)
+        programa_obt = Programa.objects.filter(id=programa).first()
+        plan_estudio_obt = PlanEstudio.objects.filter(programa=programa_obt).first()
+        semestres = Semestre.objects.filter(plan_estudio=plan_estudio_obt)
+        semestres_validos = [(i.id, i.nombre) for i in semestres]
+        self.fields['semestre'] = forms.ChoiceField(choices=semestres_validos,widget=forms.Select(attrs={'class':'form-control'}))
+
+     
+
 
 class ProgramaForm(forms.ModelForm):
-    programas = forms.ChoiceField(choices=[(doc.id_programa, doc.nombre) for doc in Programa.objects.all()])
+    programas = forms.ChoiceField(choices=[(doc.id, doc.nombre) for doc in Programa.objects.all()])
     class Meta:
         model = Programa
-        fields = ('programas',)
+        fields = ('nombre',)
         labels = {
             'programas': 'Elegir un programa'
         }
@@ -83,10 +147,10 @@ class ProgramaForm(forms.ModelForm):
         }
 
 class SemestreForm(forms.ModelForm):
-    semestre = forms.ChoiceField(choices=[(doc.id_semestre, doc.nombre) for doc in Semestre.objects.all()])
+    semestre = forms.ChoiceField(choices=[(doc.id, doc.nombre) for doc in Semestre.objects.all()])
     class Meta:
         model = Semestre
-        fields = ('semestre',)
+        fields = ('nombre',)
         labels = {
             'semestre': 'Elegir un semestre'
         }
@@ -106,13 +170,13 @@ class TarjetaCreditoForm(forms.ModelForm):
         }
         widgets = {
             'numero_tarjeta': forms.TextInput(
-                attrs= {
+                attrs={
                     'class': 'form-control',
                     'placeholder': 'XXXX-XXXX-XXXX-XXXX'
                 }
             ),
             'codigo_seguridad': forms.TextInput(
-                attrs= {
+                attrs={
                     'class': 'form-control',
                     'placeholder': 'Ingrese el codigo en la parte trasera de su tarjeta'
                 }
@@ -121,11 +185,11 @@ class TarjetaCreditoForm(forms.ModelForm):
         }
 
 
-class ActualizarUsuarioForm(forms.ModelForm):
+class ActualizarNotasForm(forms.ModelForm):
 
     class Meta:
 
-        model = Cortes
+        model = AsignaturaUsuario
         fields = ['nota_corte1','nota_corte2','nota_corte3']
         labels = {
             'nota_corte1': 'Nota del corte 1',
@@ -134,21 +198,35 @@ class ActualizarUsuarioForm(forms.ModelForm):
         }
         widgets = {
             'nota_corte1': forms.NumberInput(
-                attrs= {
+                attrs={
                     'class': 'form-control',
                     'placeholder': 'Ingrese nota corte 1'
                 }
             ),
             'nota_corte2': forms.NumberInput(
-                attrs= {
+                attrs={
                     'class': 'form-control',
                     'placeholder': 'Ingrese nota corte 2'
                 }
             ),
             'nota_corte3': forms.NumberInput(
-                attrs= {
+                attrs={
                     'class': 'form-control',
                     'placeholder': 'Ingrese nota corte 3'
                 }
             )
         }
+
+
+class HorarioEstudianteForm(forms.ModelForm):
+    class Meta:
+        model = HorarioAsignatura
+        fields = ('hora_inicio',)
+
+    def __init__(self, asignatura_id,usuario,*args, **kwargs):
+        super(HorarioEstudianteForm, self).__init__(*args, **kwargs)
+        asignatura = AsignaturaUsuario.objects.filter(id=asignatura_id, usuario=usuario).first()
+        if HorarioAsignatura.objects.filter(asignatura=asignatura.asignatura).exists():
+            horarios = HorarioAsignatura.objects.filter(asignatura=asignatura.asignatura)
+            horarios_validos = [(i.id, f'{i.hora_inicio} {i.hora_final} {i.asignatura}') for i in horarios]
+            self.fields['horarios'] = forms.ChoiceField(choices=horarios_validos,widget=forms.Select(attrs={'class':'form-control'}))

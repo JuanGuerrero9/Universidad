@@ -1,6 +1,23 @@
 var $ = jQuery.noConflict();
 
-// funciones para activar modales
+
+$(document).ready(function(){    
+    $('#boton_creacion2').click(function(){                       
+        /*Obtener datos almacenados*/
+        
+    });   
+});
+
+
+
+$(function(){
+    $('#edicion').on('shown.bs.modal', function () {
+        $(document).ready(function() {
+            $('.selectpicker').select2();
+        });
+    });
+});
+
 
 function registrar() {
     activarBoton();
@@ -22,6 +39,8 @@ function registrar() {
     });
 }
 
+
+
 function editar(){
     activarBoton();
     $.ajax({
@@ -31,6 +50,27 @@ function editar(){
         success: function (response) {
             notificacionSuccess(response.mensaje);
             setTimeout(() => {
+                cerrar_modal_edicion();
+            }, 2000)
+        },
+        error: function (error) {
+            notificacionError(error.responseJSON.mensaje);
+            mostrarErroresEdicion(error);
+            activarBoton();
+        }
+    });
+}
+
+function editar3(){
+    activarBoton();
+    $.ajax({
+        data: $('#form_edicion').serialize(),
+        url: $('#form_edicion').attr('action'),
+        type: $('#form_edicion').attr('method'),
+        success: function (response) {
+            notificacionSuccess(response.mensaje);
+            setTimeout(() => {
+                redirigirCrear(response.url);
                 cerrar_modal_edicion();
             }, 2000)
         },
@@ -193,9 +233,133 @@ function confirmacionPagoTarjeta(mensaje){
       })
 }
 
+function eleccion_estudiante(pk) {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+    })
+      
+    swalWithBootstrapButtons.fire({
+        title: 'Que proceso deseas realizar?',
+        text: "Aqui te damos las dos opciones para generacion de recibos de pago",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Estudiante antiguo',
+        cancelButtonText: 'Estudiante nuevo',
+        reverseButtons: true
+        }).then((result) => {
+        if (result.isConfirmed) {
+            abrir_modal_edicion(`/institucional/estudiante_antiguo/${pk}/`)
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            abrir_modal_edicion(`/institucional/estudiante_nuevo/${pk}/`)
+        }
+    })
+}
+
+function eleccion_tipo_usuario() {
+    const swalWithBootstrapButtons = Swal.mixin({
+        customClass: {
+          confirmButton: 'btn btn-success',
+          cancelButton: 'btn btn-primary'
+        },
+        buttonsStyling: false
+    })
+      
+    swalWithBootstrapButtons.fire({
+        title: 'Que proceso deseas realizar?',
+        text: "Elige cual de los dos tipos de usuario deseas crear",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Docente',
+        cancelButtonText: 'Estudiante',
+        reverseButtons: true
+        }).then((result) => {
+        if (result.isConfirmed) {
+            abrir_modal_edicion('/institucional/crear_usuario_docente/')
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+            abrir_modal_edicion('/institucional/crear_usuario_estudiante/')
+        }
+    })
+}
+
+
+function eliminar(url){
+    activarBoton();
+    $.ajax({
+        headers: {
+            'X-CSRFToken': csrfToken
+          },
+        url: url,
+        type: "POST",
+        success: function (response) {
+            notificacionSuccess(response.mensaje);
+            setTimeout(() => {
+                cerrar_modal_edicion();
+                redirigirEditar();
+            }, 10)
+        },
+        error: function (error) {
+            notificacionError(error.responseJSON.mensaje);
+            mostrarErroresEdicion(error);
+            activarBoton();
+        }
+    });
+}
+
+
+function confirmacion(variable){
+    Swal.fire({
+        title: `Desea matricular la ${variable}?`,
+        text: 'Se le matriculará el horario elegido para la asignatura',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si deseo validar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+            editar();
+        }
+      })
+}
 
 
 // Funciones de redireccion
+
+
+function redireccion_url(url) {
+    window.location.href = url;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function reciboPagadoTarjeta() {
     window.location.href = `/`;
@@ -220,6 +384,9 @@ function redirigirCrearUsuario(response, context) {
     }
 }
 
+function redirigirCrear(url) {
+    window.location.href = url;
+}
 
 
 // Funciones con botones

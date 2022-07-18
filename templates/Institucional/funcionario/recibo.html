@@ -3,9 +3,23 @@
     {% block title %} Recibo {% endblock title %}
 
     {% block extra_js %}
-    
-    
-    
+      <script>
+        function recibo_pago() {
+          let access_token = localStorage.getItem('Token'); 
+          let codigo = localStorage.getItem("Codigo");
+          $.ajax({
+            url: `/rest/institucional/tramites_funcionario/${codigo}/recibo_estudiante_nuevo/`,
+            method: 'GET', 
+            headers: { "Authorization": 'Bearer ' + access_token},
+            success: function(data) {  
+              document.getElementById("numero_recibo").innerHTML = data.codigo;
+              document.getElementById("persona_recibo").innerHTML = data.persona;
+              document.getElementById("cantidad_recibo").innerHTML = data.cantidad; 
+              document.getElementById("precio_recibo").innerHTML = data.precio; 
+            },
+          });
+        }
+      </script>
     {% endblock extra_js %}
 
     {% block body %}
@@ -21,7 +35,7 @@
             <div class="row justify-content-center">
                 <div class="col-8" style="border:1px solid black; padding: 30px;">
                     <h5 style="text-align: right">Universidad Mr. J <img style="height: 40px; width: 40px;"  src="https://img2.freepng.es/20181107/vqa/kisspng-scholarship-baresan-university-computer-icons-scho-sotc-conference-ticket-state-of-talent-conferenc-5be3955747ccf9.4881452815416415592941.jpg"> | <strong>RECIBO</strong></h5>
-                    <h6 style="text-align: right">N° de Recibo: {{ recibo.codigo }}</h6>
+                    <h6 style="text-align: right">N° de Recibo: <p id="numero_recibo"></p></h6>
                     
                     <br>
                     <br>
@@ -31,18 +45,18 @@
                     <table class="table table-striped">
                         <thead>
                           <tr>
-                            <th scope="col">Cantidad</th>
+                            <th scope="col">Persona</th>
                             <th scope="col">Descripcion</th>
-                            <th scope="col">Precio Unitario</th>
+                            <th scope="col">Cantidad</th>
                             <th scope="col">Precio Total</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <th scope="row">1</th>
-                            <td>Pago de recibo {{ recibo.semestre.nombre }}</td>
-                            <td>{{ recibo.semestre.costo }}</td>
-                            <td>{{ recibo.semestre.costo }}</td>
+                            <th id="persona_recibo">1</th>
+                            <td>Pago de recibo</td>
+                            <td id="cantidad_recibo"></td>
+                            <td id="precio_recibo"></td>
                           </tr>
                         </tbody>
                     </table>
@@ -63,6 +77,7 @@
             </div>
             
     
-        
 
     {% endblock body %}
+
+    

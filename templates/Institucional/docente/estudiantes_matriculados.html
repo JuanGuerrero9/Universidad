@@ -22,24 +22,26 @@
                     <table class="table table-dark table-striped">
                         <thead>
                           <tr>
-                            <th scope="col">Codigo</th>
+                            <th scope="col">Asignatura</th>
                             <th scope="col">Nombres</th>
                             <th scope="col">Apellidos</th>
                             <th scope="col">Cedula de ciudadania</th>
-                            <th scope="col">Telefono</th>
+                            <th scope="col">horario</th>
                             <th scope="col">Email</th>
                           </tr>
                         </thead>
                         <tbody>
-                            {% for i in notas %}
-                            <tr>
-                                <th scope="row">{{ i.usuario.codigo_universitario }}</th>
-                                <td>{{ i.usuario.persona.nombres }}</td>
-                                <td>{{ i.usuario.persona.apellidos }}</td>
-                                <td>{{ i.usuario.persona.cedula_ciudadano }}</td>
-                                <td>{{ i.usuario.persona.telefono }}</td>
-                                <td>{{ i.usuario.email }}</td>
-                            </tr>
+                            {% for u in estudiantes %}
+                                {% for i in u %}
+                                    <tr>
+                                        <th scope="row">{{ i.asignatura }}</th>
+                                        <td>{{ i.usuario.persona.nombres }}</td>
+                                        <td>{{ i.usuario.persona.apellidos }}</td>
+                                        <td>{{ i.usuario.persona.cedula_ciudadano }}</td>
+                                        <td>{{ i.horario_asignatura.hora_inicio }} {{ i.horario_asignatura.hora_final }}</td>
+                                        <td>{{ i.usuario.email }}</td>
+                                    </tr>
+                                {% endfor %}
                             {% endfor %}
                         </tbody>
                       </table>

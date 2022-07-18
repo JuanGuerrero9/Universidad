@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+
+    {% block title %} Recibo cancelado {% endblock title %}
+
+    {% block extra_js %}
+    <script>
+        function cancelacion_recibo_semestre() {
+            let codigo_recibo = localStorage.getItem('Codigo_recibo')
+            let numero_tarjeta = localStorage.getItem('Numero_tarjeta')
+            let valor_recibo = localStorage.getItem('Valor_recibo')
+            let saldo_tarjeta = localStorage.getItem('Saldo_tarjeta')
+            document.getElementById("numero_recibo").innerHTML = codigo_recibo;
+            document.getElementById("numero_tarjeta").innerHTML = numero_tarjeta;
+            document.getElementById("valor_recibo").innerHTML = valor_recibo;
+            document.getElementById("saldo_tarjeta").innerHTML = saldo_tarjeta;
+        }
+    </script>
+    {% endblock extra_js %}
+
+    {% block body %}
+    
+            <header class="masthead bg-light Quiensoy text-center">
+                <div class="container d-flex align-items-center flex-column">
+                    <h2>Creacion satisfactoria de Usuario</h2>
+                </div>
+            </header>
+        
+            <div class="row justify-content-center">
+                <div class="col-6">
+                    <div class="alert alert-success col align-self-center" role="alert">
+                        <h3 style="text-align: center">Se ha pagado exitosamente el recibo con código 
+                            <strong id="codigo_recibo"></strong>
+                        </h3><br>
+                        <p style="text-align: center">Los siguientes son los datos de la transacción corriendo en la tarjeta con número 
+                            <H5 style="text-align: center" id="numero_tarjeta"></H5>
+                        </p><br>
+                        <p style="text-align: center"><strong>Valor del recibo</strong></p>
+                        <H2 style="text-align: center" id="valor_recibo"></H2>
+                        <p style="text-align: center"><strong>Saldo total de la tarjeta</strong></p>
+                        <h2 style="text-align: center" id="saldo_tarjeta"></h2>
+                    </div>
+                </div>
+            </div>
+            
+    
+        
+
+    {% endblock body %}
